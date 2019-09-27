@@ -119,7 +119,7 @@ describe('Pending middleware', () => {
     it('should trigger the functions', async () => {
       await axios.get(BASIC_URL)
       assert.ok(spy_onRequestSuccess.called)
-      assert.ok(spy_onResponseSuccess.called)
+      assert.ok(!spy_onResponseSuccess.called)
     })
 
     it('should trigger the failed function', done => {
