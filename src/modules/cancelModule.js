@@ -2,31 +2,55 @@ const logger = require('./../services/logger')
 
 class CancelModule {
   constructor() {
-    this._ = {}
+    this._inner_set = {}
+  }
+
+  _generateKey(config) {
+    return config.url + config.method
+  }
+
+  _generateCancelGroupKey(config) {
+    return config.headers.cancelGroupKey
   }
 
   _sign(key) {
     const { CancelToken } = this._axios
     const source = CancelToken.source()
-    this._[key] = source
+    this._inner_set[key] = source
     return source.token
   }
 
+  _delete(key) {
+    delete this._inner_set[key]
+  }
+
   _onRequestSuccess(config) {
-    const cancelToken = this._sign(config.url)
-    setTimeout(() => {
-      logger.log('here', this._)
-      this._[config.url].cancel('cancelled!')
-    }, 50)
-    // this._[config.url].cancel('cancelled!')
+    const key = this._generateKey(config)
+    if (this._inner_set[key]) {
+      this._inner_set[key].cancel(config)
+    }
+    const cancelToken = this._sign(key)
     return { ...config, cancelToken }
   }
 
   _onResponseFailed(error) {
-    if (this._axios.isCancel(error)) {
-      return { message: 'Axios cancellation process' }
+    const key = this._generateKey(error.message)
+    if (this._inner_set[key]) {
+      this._delete(key)
     }
-    return error
+    if (this._axios.isCancel(error)) {
+      const { method, url } = error.message
+      logger.group('cancel request execute')
+      logger.log(`Method: [${method}]`)
+      logger.log(`URL: [${url}]`)
+      logger.groupEnd('cancel request execute')
+    }
+    return Promise.reject({ ...error, isCanceled: true })
+  }
+
+  _onResponseSuccess(response) {
+    this._delete(this._generateKey(response.config))
+    return response
   }
 
 
@@ -35,7 +59,10 @@ class CancelModule {
   applyMiddleware(axios) {
     this._axios = axios
     axios.interceptors.request.use(this._onRequestSuccess.bind(this))
-    axios.interceptors.response.use((r) => r, this._onResponseFailed.bind(this))
+    axios.interceptors.response.use(
+      this._onResponseSuccess.bind(this),
+      this._onResponseFailed.bind(this),
+    )
   }
 }
 

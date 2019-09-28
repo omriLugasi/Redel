@@ -8,9 +8,9 @@ class PendingModule {
     return config
   }
 
-  _onResponseSuccess(config) {
-    this._delete(config.config.url)
-    return config
+  _onResponseSuccess(response) {
+    this._delete(response.config.url)
+    return response
   }
 
   _onResponseFailed(error) {
