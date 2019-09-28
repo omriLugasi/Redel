@@ -1,6 +1,3 @@
-const axios = require('axios')
-
-
 /**
  *  Basic url for promise function
  */
@@ -8,5 +5,5 @@ const axios = require('axios')
 const BASIC_URL = 'https://jsonplaceholder.typicode.com/todos/1'
 
 module.exports = {
-  BASIC_URL
+  BASIC_URL,
 }

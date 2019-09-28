@@ -3,12 +3,13 @@ const { assert } = require('chai')
 const sinon = require('sinon')
 const { BASIC_URL } = require('./../utils')
 
-/** AMBIANCE **/
-const ambiance = require('./../../index')
+/**
+ * AMBIANCE
+ * */
+const ambiance = require('../../src/index')
 
 
 describe('Pending middleware', () => {
-
   before(() => {
     ambiance.use(axios, { pending: true })
   })
@@ -18,21 +19,18 @@ describe('Pending middleware', () => {
   })
 
   describe('Pending Request check exists in main module', () => {
-
-   it('should exist under the "pending" field', () => {
+    it('should exist under the "pending" field', () => {
       assert.ok(!!ambiance.pending)
-   })
-
+    })
   })
 
   describe('Pending Request "_add" functionality', () => {
-
     it('should be a function', () => {
       assert.ok(typeof ambiance.pending._add === 'function')
     })
 
     it('should work only with string as first parameter', () => {
-      assert.throws(() => ambiance.pending._add(null),'Ambiance pending request should work only with string')
+      assert.throws(() => ambiance.pending._add(null), 'Ambiance pending request should work only with string')
     })
 
 
@@ -41,11 +39,9 @@ describe('Pending middleware', () => {
       ambiance.pending._add('somekey2')
       assert.ok(ambiance.pending.getPendingRequests().length === 2)
     })
-
   })
 
   describe('Pending Request "_delete" functionality', () => {
-
     it('should be a function', () => {
       assert.typeOf(ambiance.pending._delete, 'function')
     })
@@ -66,11 +62,9 @@ describe('Pending middleware', () => {
       ambiance.pending._delete(anotherKey)
       assert.ok(ambiance.pending.getPendingRequests().length === 1)
     })
-
   })
 
   describe('Pending Request "clear" functionality', () => {
-
     it('should be a function', () => {
       assert.typeOf(ambiance.pending.clear, 'function')
     })
@@ -80,11 +74,9 @@ describe('Pending middleware', () => {
       ambiance.pending.clear()
       assert.notEqual(oldPointer, ambiance.pending._inner_set)
     })
-
   })
 
   describe('Pending Request "getPendingRequests"', () => {
-
     it('should be a function', () => {
       assert.ok(typeof ambiance.pending.getPendingRequests === 'function')
     })
@@ -108,28 +100,24 @@ describe('Pending middleware', () => {
       ambiance.pending._add(key)
       assert.equal(ambiance.pending.getPendingRequests()[0], key)
     })
-
   })
 
   describe('Spy on interceptors function', () => {
-    const spy_onRequestSuccess = sinon.spy(ambiance.pending, '_onRequestSuccess')
-    const spy_onResponseSuccess = sinon.spy(ambiance.pending, '_onResponseSuccess')
-    const spy_onResponseFailed = sinon.spy(ambiance.pending, '_onResponseFailed')
+    const spyOnRequestSuccess = sinon.spy(ambiance.pending, '_onRequestSuccess')
+    const spyOnResponseSuccess = sinon.spy(ambiance.pending, '_onResponseSuccess')
+    const spyOnResponseFailed = sinon.spy(ambiance.pending, '_onResponseFailed')
 
     it('should trigger the functions', async () => {
       await axios.get(BASIC_URL)
-      assert.ok(spy_onRequestSuccess.called)
-      assert.ok(spy_onResponseSuccess.called)
+      assert.ok(spyOnRequestSuccess.called)
+      assert.ok(spyOnResponseSuccess.called)
     })
 
     it('should trigger the failed function', done => {
       axios.get('someWrongUrl').catch(() => {
-        assert.ok(spy_onResponseFailed.called)
+        assert.ok(spyOnResponseFailed.called)
         done()
       })
     })
-
   })
-
-
 })

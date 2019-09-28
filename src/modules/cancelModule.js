@@ -1,25 +1,25 @@
+const logger = require('./../services/logger')
 
 class CancelModule {
-
   constructor() {
     this._ = {}
   }
 
   _sign(key) {
-    const CancelToken = this._axios.CancelToken
+    const { CancelToken } = this._axios
     const source = CancelToken.source()
     this._[key] = source
     return source.token
   }
 
   _onRequestSuccess(config) {
-    config.cancelToken = this._sign(config.url)
+    const cancelToken = this._sign(config.url)
     setTimeout(() => {
-      console.log('here', this._)
+      logger.log('here', this._)
       this._[config.url].cancel('cancelled!')
     }, 50)
     // this._[config.url].cancel('cancelled!')
-    return config
+    return { ...config, cancelToken }
   }
 
   _onResponseFailed(error) {
@@ -30,14 +30,13 @@ class CancelModule {
   }
 
 
-  /** EXPOSE **/
+  /** EXPOSE * */
 
   applyMiddleware(axios) {
     this._axios = axios
     axios.interceptors.request.use(this._onRequestSuccess.bind(this))
-    axios.interceptors.response.use(r => r, this._onResponseFailed.bind(this))
+    axios.interceptors.response.use((r) => r, this._onResponseFailed.bind(this))
   }
-
 }
 
 

@@ -1,5 +1,4 @@
 class PendingModule {
-
   constructor() {
     this._inner_set = new Set()
   }
@@ -16,7 +15,7 @@ class PendingModule {
 
   _onResponseFailed(error) {
     this._delete(error.config.url)
-    return Promise.reject(error);
+    return Promise.reject(error)
   }
 
   _add(key) {
@@ -37,14 +36,18 @@ class PendingModule {
   /* EXPOSE FUNCTIONS */
 
   applyMiddleware(axios) {
-    axios.interceptors.request.use(this._onRequestSuccess.bind(this))
-    axios.interceptors.response.use(this._onResponseSuccess.bind(this), this._onResponseFailed.bind(this))
+    axios.interceptors.request.use(
+      this._onRequestSuccess.bind(this),
+    )
+    axios.interceptors.response.use(
+      this._onResponseSuccess.bind(this),
+      this._onResponseFailed.bind(this),
+    )
   }
 
   getPendingRequests() {
-    return [ ...this._inner_set ]
+    return [...this._inner_set]
   }
-
 }
 
 

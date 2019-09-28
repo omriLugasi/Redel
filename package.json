@@ -4,18 +4,23 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "test": "mocha --recursive ./test"
+    "test": "mocha --recursive ./test",
+    "eslint:src": "eslint src/",
+    "eslint:test": "eslint test/"
   },
   "dependencies": {
     "axios": "^0.19.0",
     "chai": "^4.2.0",
+    "eslint": "^6.4.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.18.2",
     "husky": "^3.0.5",
     "mocha": "^6.2.0",
     "sinon": "^7.5.0"
   },
   "husky": {
     "hooks": {
-      "pre-push": "npm test"
+      "pre-push": "yarn test && yarn eslint:src && yarn eslint:test"
     }
   }
 }
