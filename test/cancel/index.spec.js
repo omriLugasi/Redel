@@ -1,24 +1,24 @@
 const axios = require('axios')
 const ambiance = require('./../../src')
 const logger = require('./../../src/services/logger')
+const { BASIC_URL } = require('./../utils')
 
 ambiance.use(axios, { cancel: true })
 
+const cancelGroupKey = 'Omri Luggasi'
 
-axios.get('https://jsonplaceholder.typicode.com/todos/1', { headers: { cancelGroupKey: 'Omri Luggasi' } })
-  .then(response => logger.log(response))
-  .catch(() => {})
-axios.get('https://jsonplaceholder.typicode.com/todos/1')
-  .then(response => logger.log(response))
-  .catch(() => {})
-axios.get('https://jsonplaceholder.typicode.com/todos/1')
-  .then(() => {})
-  .catch(e => {
-    if (e.isCanceled) {
-      return logger.log('axios canceled by the middleware')
-    }
-    return logger.log('something is fucked up')
-  })
-axios.get('https://jsonplaceholder.typicode.com/todos/1')
-  .then(response => logger.log(response.data))
-  .catch(e => logger.error(e))
+axios.get(`${BASIC_URL}/time-out/2000`, { headers: { cancelGroupKey } })
+  .then(response => logger.log(response.data, '87678'))
+  .catch(() => logger.log('remove the response'))
+
+axios.get(`${BASIC_URL}/time-out/1500`, { headers: { cancelGroupKey } })
+  .then(response => logger.log(response.data, '87678'))
+  .catch(() => logger.log('remove the response'))
+
+axios.get(`${BASIC_URL}/time-out/872`, { headers: { cancelGroupKey } })
+  .then(response => logger.log(response.data, '87678'))
+  .catch(() => logger.log('remove the response'))
+
+setTimeout(() => {
+  ambiance.cancel.cancelAllGroupRequest(cancelGroupKey)
+}, 350)

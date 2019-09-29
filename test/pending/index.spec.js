@@ -2,12 +2,7 @@ const axios = require('axios')
 const { assert } = require('chai')
 const sinon = require('sinon')
 const { BASIC_URL } = require('./../utils')
-
-/**
- * AMBIANCE
- * */
 const ambiance = require('../../src/index')
-
 
 describe('Pending middleware', () => {
   before(() => {
@@ -107,8 +102,8 @@ describe('Pending middleware', () => {
     const spyOnResponseSuccess = sinon.spy(ambiance.pending, '_onResponseSuccess')
     const spyOnResponseFailed = sinon.spy(ambiance.pending, '_onResponseFailed')
 
-    it('should trigger the functions', async () => {
-      await axios.get(BASIC_URL)
+    it('should trigger the spy functions', async () => {
+      await axios.get(`${BASIC_URL}/time-out/0`)
       assert.ok(spyOnRequestSuccess.called)
       assert.ok(spyOnResponseSuccess.called)
     })
