@@ -19,6 +19,23 @@ axios.get(`${BASIC_URL}/time-out/872`, { headers: { cancelGroupKey } })
   .then(response => logger.log(response.data, '87678'))
   .catch(() => logger.log('remove the response'))
 
+
+axios.get(`${BASIC_URL}/basic`)
+  .then(response => logger.log(response.data, '!!!!'))
+  .catch(() => logger.log('remove the response'))
+axios.get(`${BASIC_URL}/basic`)
+  .then(response => logger.log(response.data, '!!!!'))
+  .catch(() => logger.log('remove the response'))
+axios.get(`${BASIC_URL}/basic`)
+  .then(response => logger.log(response.data, '!!!!'))
+  .catch(e => logger.log('remove the response', e.isCanceled))
+axios.get(`${BASIC_URL}/basic`)
+  .then(response => logger.log(response.data, '!!!!'))
+  .catch(() => logger.log('remove the response'))
+axios.get(`${BASIC_URL}/basic`)
+  .then(response => logger.log(response.data, '!!!!'))
+  .catch(() => logger.log('remove the response'))
+
 setTimeout(() => {
   ambiance.cancel.cancelAllGroupRequest(cancelGroupKey)
 }, 350)
