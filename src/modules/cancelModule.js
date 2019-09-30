@@ -36,7 +36,7 @@ class CancelModule {
     const [key, groupKey] = this._generateKeys(config)
     const { CancelToken } = this._axios
     const source = CancelToken.source()
-    this._inner_set[key] = { cancel: source.cancel }
+    this._inner_set[key] = source
     this._signToGroup(key, groupKey)
     return source.token
   }
