@@ -5,6 +5,7 @@
   "license": "MIT",
   "scripts": {
     "test": "mocha --recursive ./test",
+    "test:1": "mocha ./test/cancel/index.spec.js",
     "eslint:src": "eslint src/",
     "eslint:test": "eslint test/"
   },

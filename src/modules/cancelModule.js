@@ -71,15 +71,18 @@ class CancelModule {
   }
 
   _onResponseFailed(error) {
-    this._delete(error.message)
+    // console.assert(!(error.config || error.message).url.includes('time-out'), error.isCanceled)
+    error.config = error.config || error.message
+    this._delete(error.config)
     if (this._axios.isCancel(error)) {
-      const { method, url: configUrl } = error.message
+      const { method, url: configUrl } = error.config
       logger.group('cancel request execute')
       logger.log(`Method: [${method}]`)
       logger.log(`URL: [${configUrl}]`)
       logger.groupEnd('cancel request execute')
+      error.isCanceled = true
     }
-    return Promise.reject({ ...error, isCanceled: true })
+    return Promise.reject(error)
   }
 
   _onResponseSuccess(response) {
@@ -101,13 +104,14 @@ class CancelModule {
 
   cancelAllGroupRequest(groupKey) {
     const cancelGroup = this._inner_set_group[groupKey]
+    console.log({ cancelGroup, groupKey, A: this._inner_set_group })
     if (!Array.isArray(cancelGroup)) {
       return
     }
     cancelGroup.forEach(key => {
       const [configUrl, method] = key.split(' -> ')
       const fakeConfig = { url: configUrl, method, headers: { groupKey } }
-      this._inner_set[key].cancel()
+      this._inner_set[key].cancel(fakeConfig)
       this._delete(fakeConfig)
     })
     delete this._inner_set_group[groupKey]

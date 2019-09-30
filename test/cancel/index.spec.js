@@ -1,41 +1,105 @@
 const axios = require('axios')
+const { assert } = require('chai')
 const ambiance = require('./../../src')
-const logger = require('./../../src/services/logger')
 const { BASIC_URL } = require('./../utils')
+const server = require('./../../server')
 
-ambiance.use(axios, { cancel: true })
+const cancelGroupKey = 'customGroupKey'
 
-const cancelGroupKey = 'Omri Luggasi'
+describe('Cancel module', () => {
 
-axios.get(`${BASIC_URL}/time-out/2000`, { headers: { cancelGroupKey } })
-  .then(response => logger.log(response.data, '87678'))
-  .catch(() => logger.log('remove the response'))
+  before(() => {
+    ambiance.use(axios, { cancel: true })
+    server.init()
+  })
 
-axios.get(`${BASIC_URL}/time-out/1500`, { headers: { cancelGroupKey } })
-  .then(response => logger.log(response.data, '87678'))
-  .catch(() => logger.log('remove the response'))
+  after(() => {
+    server.close()
+  })
 
-axios.get(`${BASIC_URL}/time-out/872`, { headers: { cancelGroupKey } })
-  .then(response => logger.log(response.data, '87678'))
-  .catch(() => logger.log('remove the response'))
+  describe('cancel group requests', () => {
+    const config = { headers: { cancelGroupKey } }
+    const generateUrl = time => `${BASIC_URL}/time-out/${ time }`
+    const basicNum = 300
+    let canceledRequestsTimes = 0
+    const catchFn = e => {
+      if (e.isCanceled) {
+        canceledRequestsTimes++
+      }
+      else {
+        console.error(e.config.url, e.isCanceled)
+      }
+    }
 
+    context('basic cancel group logic', () => {
+      before(() => {
+        axios.get(generateUrl(basicNum + 20), config).catch(catchFn)
+        axios.get(generateUrl(basicNum + 50), config).catch(catchFn)
+        axios.get(generateUrl(basicNum + 70), config).catch(catchFn)
+        axios.get(generateUrl(basicNum + 100), config).catch(catchFn)
+        axios.get(generateUrl(basicNum + 190), config).catch(catchFn)
+      })
 
-axios.get(`${BASIC_URL}/basic`)
-  .then(response => logger.log(response.data, '!!!!'))
-  .catch(() => logger.log('remove the response'))
-axios.get(`${BASIC_URL}/basic`)
-  .then(response => logger.log(response.data, '!!!!'))
-  .catch(() => logger.log('remove the response'))
-axios.get(`${BASIC_URL}/basic`)
-  .then(response => logger.log(response.data, '!!!!'))
-  .catch(e => logger.log('remove the response', e.isCanceled))
-axios.get(`${BASIC_URL}/basic`)
-  .then(response => logger.log(response.data, '!!!!'))
-  .catch(() => logger.log('remove the response'))
-axios.get(`${BASIC_URL}/basic`)
-  .then(response => logger.log(response.data, '!!!!'))
-  .catch(() => logger.log('remove the response'))
+      it('validate that request with "cancelGroupKey" canceled', done => {
+        ambiance.cancel.cancelAllGroupRequest(cancelGroupKey)
+        assert.ok(canceledRequestsTimes, 5)
+        done()
+      })
+    })
+  })
 
-setTimeout(() => {
-  ambiance.cancel.cancelAllGroupRequest(cancelGroupKey)
-}, 350)
+  describe('cancel single request', () => {
+    let canceledRequestsTimes = 0
+    const url = `${BASIC_URL}/basic`
+    const catchFn = e => {
+      if (e.isCanceled) {
+        canceledRequestsTimes++
+      }
+    }
+
+    context('When using the same http method', () => {
+      before(() => {
+        canceledRequestsTimes = 0
+        axios.get(url).catch(catchFn)
+        axios.get(url).catch(catchFn)
+        axios.get(url).catch(catchFn)
+        axios.get(url).catch(catchFn)
+        axios.get(url).catch(catchFn) // the last one should be fulfilled without cancellation
+      })
+
+      it('should check if the number of canceled request is valid', () => {
+        assert.ok(canceledRequestsTimes, 4)
+      })
+    })
+
+    context('When using different methods', () => {
+      before(() => {
+        canceledRequestsTimes = 0
+        axios.get(url).catch(catchFn)
+        axios.get(url).catch(catchFn)
+        axios.delete(url).catch(catchFn)
+        axios.patch(url).catch(catchFn)
+        axios.post(url).catch(catchFn) // the last one should be fulfilled without cancellation
+      })
+
+      it('should validate that different methods on the same url sign under different keys', () => {
+        assert.ok(canceledRequestsTimes, 1)
+      })
+    })
+
+    context('When using the same http request with different params', () => {
+      before(() => {
+        canceledRequestsTimes = 0
+        axios.get(`${ url }?param=1`).catch(catchFn)
+        axios.get(`${ url }?param=2`).catch(catchFn)
+        axios.get(`${ url }?param=3`).catch(catchFn) // the last one should be fulfilled without cancellation
+      })
+
+      it('should validate that different params doesn\'t effect on the cancel logic', () => {
+        assert.ok(canceledRequestsTimes, 2)
+      })
+    })
+  })
+
+})
+

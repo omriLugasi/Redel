@@ -21,4 +21,11 @@ app.get('/basic', (req, res) => {
   res.send({ userId: 1, id: 1, title: 'This is a title', completed: false })
 })
 
-app.listen(port, () => console.log(`Test Help Server run on port ${port}!`))
+let server
+
+module.exports = {
+  init: () => {
+    server = app.listen(port)
+  },
+  close: () => server.close()
+}

@@ -3,10 +3,16 @@ const { assert } = require('chai')
 const sinon = require('sinon')
 const { BASIC_URL } = require('./../utils')
 const ambiance = require('../../src/index')
+const server = require('./../../server')
 
 describe('Pending middleware', () => {
   before(() => {
     ambiance.use(axios, { pending: true })
+    server.init()
+  })
+
+  after(() => {
+    server.close()
   })
 
   afterEach(() => {
