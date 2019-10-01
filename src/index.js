@@ -8,21 +8,32 @@ const basicModules = {
 }
 
 function Ambience() {
+  this.signedModules = []
   return this
 }
 
-
-Ambience.prototype.use = (axios, config = {}) => {
+function use(axios, config) {
   this._axios = axios
-  if (config && typeof config === 'object') {
+  if (config && typeof config === 'object' && !Array.isArray(config)) {
     Object.keys(config).forEach((key) => {
       if (basicModules[key]) {
         logger.log(` ${key} Middleware was sign`)
         basicModules[key].applyMiddleware(axios)
+        this.signedModules.push(key)
       }
     })
+  } else {
+    throw new Error('Ambiance: try to initialize the "use" function with wrong config type')
   }
 }
+
+function getSignedMiddleware() {
+  return [...this.signedModules]
+}
+
+
+Ambience.prototype.use = use
+Ambience.prototype.getSignedMiddleware = getSignedMiddleware
 
 Ambience.prototype.pending = pending
 Ambience.prototype.cancel = cancel

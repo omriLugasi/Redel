@@ -23,7 +23,7 @@ describe('Cancel module', () => {
     let canceledRequestsTimes = 0
     const catchFn = e => {
       if (e.isCanceled) {
-        canceledRequestsTimes++
+        canceledRequestsTimes += 1
       }
     }
 
@@ -41,6 +41,25 @@ describe('Cancel module', () => {
         ambiance.cancel.cancelAllGroupRequest(cancelGroupKey)
         setTimeout(() => {
           assert.ok(canceledRequestsTimes, 5)
+          done()
+        }, 0)
+      })
+    })
+
+    context('check that cancel of one group dosen\'t effect on other group', () => {
+      const customConfig = { headers: { cancelGroupKey: 'custom' } }
+
+      before(() => {
+        canceledRequestsTimes = 0
+        axios.get(generateUrl(basicNum + 20), customConfig).catch(catchFn)
+        axios.get(generateUrl(basicNum + 30), customConfig).catch(catchFn)
+        axios.get(generateUrl(basicNum + 40), customConfig).catch(catchFn)
+      })
+
+      it('should validate that "cancelAllGroupRequests" cancel only the requests with the group key', done => {
+        ambiance.cancel.cancelAllGroupRequest('another-custom-group-key')
+        setTimeout(() => {
+          assert.equal(canceledRequestsTimes, 0)
           done()
         }, 0)
       })
