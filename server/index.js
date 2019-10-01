@@ -10,7 +10,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 
-app.get('^/time-out/:time([0-9])', (req, res) => {
+app.get('^/time-out/:time([0-9]{1,6})', (req, res) => {
   const { time = 0 } = req.params
   setTimeout(() => {
     res.send({ userId: 1, id: 1, title: 'This is a title', completed: false })
@@ -21,4 +21,11 @@ app.get('/basic', (req, res) => {
   res.send({ userId: 1, id: 1, title: 'This is a title', completed: false })
 })
 
-app.listen(port, () => console.log(`Test Help Server run on port ${port}!`))
+let server
+
+module.exports = {
+  init: () => {
+    server = app.listen(port)
+  },
+  close: () => server.close()
+}
