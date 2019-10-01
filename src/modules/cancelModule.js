@@ -71,18 +71,19 @@ class CancelModule {
   }
 
   _onResponseFailed(error) {
-    // console.assert(!(error.config || error.message).url.includes('time-out'), error.isCanceled)
-    error.config = error.config || error.message
-    this._delete(error.config)
-    if (this._axios.isCancel(error)) {
-      const { method, url: configUrl } = error.config
+    const config = error.config || error.message
+    const customError = { ...error, config }
+    const isCanceledByAxios = this._axios.isCancel(error)
+    this._delete(config)
+    if (isCanceledByAxios) {
+      const { method, url: configUrl } = config
       logger.group('cancel request execute')
       logger.log(`Method: [${method}]`)
       logger.log(`URL: [${configUrl}]`)
       logger.groupEnd('cancel request execute')
-      error.isCanceled = true
+      customError.isCanceled = true
     }
-    return Promise.reject(error)
+    return Promise.reject(customError)
   }
 
   _onResponseSuccess(response) {
@@ -104,10 +105,10 @@ class CancelModule {
 
   cancelAllGroupRequest(groupKey) {
     const cancelGroup = this._inner_set_group[groupKey]
-    console.log({ cancelGroup, groupKey, A: this._inner_set_group })
     if (!Array.isArray(cancelGroup)) {
       return
     }
+
     cancelGroup.forEach(key => {
       const [configUrl, method] = key.split(' -> ')
       const fakeConfig = { url: configUrl, method, headers: { groupKey } }
@@ -117,6 +118,5 @@ class CancelModule {
     delete this._inner_set_group[groupKey]
   }
 }
-
 
 module.exports = new CancelModule()

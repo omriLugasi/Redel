@@ -7,7 +7,6 @@ const server = require('./../../server')
 const cancelGroupKey = 'customGroupKey'
 
 describe('Cancel module', () => {
-
   before(() => {
     ambiance.use(axios, { cancel: true })
     server.init()
@@ -19,20 +18,18 @@ describe('Cancel module', () => {
 
   describe('cancel group requests', () => {
     const config = { headers: { cancelGroupKey } }
-    const generateUrl = time => `${BASIC_URL}/time-out/${ time }`
+    const generateUrl = time => `${BASIC_URL}/time-out/${time}`
     const basicNum = 300
     let canceledRequestsTimes = 0
     const catchFn = e => {
       if (e.isCanceled) {
         canceledRequestsTimes++
       }
-      else {
-        console.error(e.config.url, e.isCanceled)
-      }
     }
 
     context('basic cancel group logic', () => {
       before(() => {
+        canceledRequestsTimes = 0
         axios.get(generateUrl(basicNum + 20), config).catch(catchFn)
         axios.get(generateUrl(basicNum + 50), config).catch(catchFn)
         axios.get(generateUrl(basicNum + 70), config).catch(catchFn)
@@ -40,10 +37,12 @@ describe('Cancel module', () => {
         axios.get(generateUrl(basicNum + 190), config).catch(catchFn)
       })
 
-      it('validate that request with "cancelGroupKey" canceled', done => {
+      it('should validate that requests with "cancelGroupKey" canceled', done => {
         ambiance.cancel.cancelAllGroupRequest(cancelGroupKey)
-        assert.ok(canceledRequestsTimes, 5)
-        done()
+        setTimeout(() => {
+          assert.ok(canceledRequestsTimes, 5)
+          done()
+        }, 0)
       })
     })
   })
@@ -53,7 +52,7 @@ describe('Cancel module', () => {
     const url = `${BASIC_URL}/basic`
     const catchFn = e => {
       if (e.isCanceled) {
-        canceledRequestsTimes++
+        canceledRequestsTimes += 1
       }
     }
 
@@ -90,9 +89,9 @@ describe('Cancel module', () => {
     context('When using the same http request with different params', () => {
       before(() => {
         canceledRequestsTimes = 0
-        axios.get(`${ url }?param=1`).catch(catchFn)
-        axios.get(`${ url }?param=2`).catch(catchFn)
-        axios.get(`${ url }?param=3`).catch(catchFn) // the last one should be fulfilled without cancellation
+        axios.get(`${url}?param=1`).catch(catchFn)
+        axios.get(`${url}?param=2`).catch(catchFn)
+        axios.get(`${url}?param=3`).catch(catchFn) // the last one should be fulfilled without cancellation
       })
 
       it('should validate that different params doesn\'t effect on the cancel logic', () => {
@@ -100,6 +99,4 @@ describe('Cancel module', () => {
       })
     })
   })
-
 })
-
