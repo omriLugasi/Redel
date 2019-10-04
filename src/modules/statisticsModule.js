@@ -1,5 +1,4 @@
 const url = require('url')
-const logger = require('./../services/logger')
 
 class StatisticsModule {
   constructor() {
@@ -12,16 +11,18 @@ class StatisticsModule {
   }
 
   _onResponseSuccess(response) {
+    const key = response.config.url
     this._update(response)
-    this._printByKey(response.config.url)
-    this._delete(response.config.url)
+    this._printByKey(key)
+    this._delete(key)
     return response
   }
 
   _onResponseFailed(error) {
+    const key = error.config.url
     this._update(error)
-    this._printByKey(error.config.url)
-    this._delete(error.config.url)
+    this._printByKey(key)
+    this._delete(key)
     return Promise.reject(error)
   }
 
@@ -32,9 +33,13 @@ class StatisticsModule {
       startTime: Date.now(),
       endTime: null,
       totalTime: null,
+      timeout: config.timeout,
+      proxy: config.proxy,
+      maxContentLength: config.maxContentLength,
+      requestHeaders: config.headers,
       requestData: this._extractDataFromRequest(config),
       responseData: null,
-      classTransform: null,
+      isCompletedWithoutError: null,
     }
   }
 
@@ -42,12 +47,14 @@ class StatisticsModule {
     delete this._inner_set[key]
   }
 
-  _update({ config, data }) {
+  _update({ config, data, status }) {
+    const currentTime = Date.now()
     const basicObject = this._inner_set[config.url]
     const updateLogQuery = {
-      endTime: Date.now(),
-      totalTime: `${Date.now() - basicObject.startTime}ms`,
+      endTime: currentTime,
+      totalTime: `${currentTime - basicObject.startTime}ms`,
       responseData: data,
+      isCompletedWithoutError: config.validateStatus(status),
     }
     this._inner_set[config.url] = {
       ...basicObject,
@@ -56,9 +63,11 @@ class StatisticsModule {
   }
 
   _printByKey(key) {
-    logger.group(key)
-    logger.log(this._inner_set[key])
-    logger.groupEnd(key)
+    /* eslint-disable no-console */
+    console.group(key)
+    console.log(this._inner_set[key])
+    console.groupEnd(key)
+    /* eslint-disable no-console */
   }
 
 
