@@ -6,7 +6,7 @@ const logger = require('./services/logger')
 const basicModules = {
   pending,
   cancel,
-  statistics
+  statistics,
 }
 
 function Ambience() {

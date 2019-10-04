@@ -2,7 +2,6 @@ const url = require('url')
 const logger = require('./../services/logger')
 
 class StatisticsModule {
-
   constructor() {
     this._inner_set = {}
   }
@@ -35,7 +34,7 @@ class StatisticsModule {
       totalTime: null,
       requestData: this._extractDataFromRequest(config),
       responseData: null,
-      classTransform: null
+      classTransform: null,
     }
   }
 
@@ -47,12 +46,12 @@ class StatisticsModule {
     const basicObject = this._inner_set[config.url]
     const updateLogQuery = {
       endTime: Date.now(),
-      totalTime: `${ Date.now() - basicObject.startTime }ms`,
-      responseData: data
+      totalTime: `${Date.now() - basicObject.startTime}ms`,
+      responseData: data,
     }
     this._inner_set[config.url] = {
       ...basicObject,
-      ...updateLogQuery
+      ...updateLogQuery,
     }
   }
 
@@ -68,8 +67,8 @@ class StatisticsModule {
     const query = {}
     if (urlObject.query) {
       urlObject.query.split('&').forEach(queryParam => {
-        const arr = queryParam.split('=')
-        query[ arr[ 0 ] ] = arr[ 1 ]
+        const [key, value] = queryParam.split('=')
+        query[key] = value
       })
     }
 
