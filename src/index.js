@@ -1,10 +1,12 @@
 const pending = require('./modules/pendingModule')
 const cancel = require('./modules/cancelModule')
+const statistics = require('./modules/statisticsModule')
 const logger = require('./services/logger')
 
 const basicModules = {
   pending,
   cancel,
+  statistics
 }
 
 function Ambience() {
@@ -37,6 +39,7 @@ Ambience.prototype.getSignedMiddleware = getSignedMiddleware
 
 Ambience.prototype.pending = pending
 Ambience.prototype.cancel = cancel
+Ambience.prototype.statistics = statistics
 
 
 module.exports = new Ambience()
