@@ -1,9 +1,14 @@
-const pending = require('./plugins/pendingModule')
-const cancel = require('./plugins/cancelModule')
-const statistics = require('./plugins/statisticsModule')
+const pending = require('./plugins/pending.plugin')
+const cancel = require('./plugins/cancel.plugin')
+const statistics = require('./plugins/statistics.plugin')
 const logger = require('./services/logger')
 
-const basicModules = {
+/**
+ * The Only Authorized plugins for this version
+ * In the Future we want to let developers to create middlewares
+ * and use our API to create custom plugins
+ */
+const AuthorizedPlugins = {
   pending,
   cancel,
   statistics,
@@ -14,13 +19,23 @@ function Redel() {
   return this
 }
 
+/**
+ * @description
+ * "use" will search for desire and authorized plugins to invoke there "init" function,
+ * this function called "applyMiddleware".
+ * Please notice that plugin key must be follow by *true* value
+ * @param axios - the axios instance ( also work with axios.create())
+ * @param config -
+ * should be an object that contain the names of the desire plugins as key and
+ * true as value for example { pending: true }
+ */
 function use(axios, config) {
   this._axios = axios
   if (config && typeof config === 'object' && !Array.isArray(config)) {
     Object.keys(config).forEach((key) => {
-      if (basicModules[key]) {
+      if (AuthorizedPlugins[key]) {
         logger.log(` ${key} Middleware was sign`)
-        basicModules[key].applyMiddleware(axios)
+        AuthorizedPlugins[key].applyMiddleware(axios)
         this.signedModules.push(key)
       }
     })
@@ -29,14 +44,35 @@ function use(axios, config) {
   }
 }
 
+/**
+ * @description
+ * Will return Array of singed plugins name
+ * @returns {Strings["plugin-name"]}
+ */
 function getSignedMiddleware() {
   return [...this.signedModules]
 }
 
 
+/**
+ * @description
+ * List of function that can be invoke from the main Redel Object
+ * @param use - for init the library
+ * @param getSignedMiddleware - to get the singed plugins as strings array
+ */
 Redel.prototype.use = use
 Redel.prototype.getSignedMiddleware = getSignedMiddleware
 
+
+/**
+ * @description
+ * List of plugins that Redel Authorize to use
+ * @param pending - A pending plugin, plugin that give you control on the pending requests
+ * @param cancel - A cancel plugin - plugin that give to the cancelToken a super powers,
+ * cancel irrelevant request like nobody watch
+ * @param statistics - A statistics plugin - print statistics on each request, for example
+ * time, requestData, ResponseData, proxies, and much more ...
+ */
 Redel.prototype.pending = pending
 Redel.prototype.cancel = cancel
 Redel.prototype.statistics = statistics

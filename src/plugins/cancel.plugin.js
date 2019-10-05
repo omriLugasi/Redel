@@ -1,7 +1,7 @@
 const url = require('url')
 const logger = require('./../services/logger')
 
-class CancelModule {
+class Cancel {
   constructor() {
     this._inner_set = {}
     this._inner_set_group = {}
@@ -119,4 +119,4 @@ class CancelModule {
   }
 }
 
-module.exports = new CancelModule()
+module.exports = new Cancel()

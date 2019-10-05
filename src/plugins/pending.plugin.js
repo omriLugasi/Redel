@@ -1,4 +1,4 @@
-class PendingModule {
+class Pending {
   constructor() {
     this._inner_set = new Set()
   }
@@ -51,4 +51,4 @@ class PendingModule {
 }
 
 
-module.exports = new PendingModule()
+module.exports = new Pending()

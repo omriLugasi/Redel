@@ -1,6 +1,6 @@
 const url = require('url')
 
-class StatisticsModule {
+class Statistics {
   constructor() {
     this._inner_set = {}
   }
@@ -103,4 +103,4 @@ class StatisticsModule {
 }
 
 
-module.exports = new StatisticsModule()
+module.exports = new Statistics()
