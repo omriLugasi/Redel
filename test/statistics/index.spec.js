@@ -1,7 +1,7 @@
 const axios = require('axios')
 const { assert } = require('chai')
 const { spy } = require('sinon')
-const { BASIC_URL } = require('./../utils')
+const { BASIC_URL, generateQueryStringFromObject } = require('./../utils')
 const server = require('./../../server')
 const ambiance = require('./../../src')
 
@@ -192,14 +192,34 @@ describe('Statistics module', () => {
 
   context('is statistics object contains the right parameters for request', () => {
     let consoleLogSpy
-    // const url = `${BASIC_URL}/basic`
+    let printedData
+    const url = `${BASIC_URL}/basic`
+    const query = { queryParam1: '1', queryParam2: '2' }
+    const params = { param1: 1 }
+    const data = { dataParam: 1, dataParam2: 'string' }
+    const queryString = generateQueryStringFromObject(query)
 
-    before(() => {
+    before(async () => {
       consoleLogSpy = spy(console, 'log')
+      await axios.post(`${ url }?${ queryString }`, data, { params })
+      printedData = consoleLogSpy.getCall(1).args[0]
     })
 
     after(() => {
       consoleLogSpy.restore()
     })
+
+    it('should validate that request sent with the right query params', async () => {
+      assert.deepEqual(printedData.requestData.query, query)
+    })
+
+    it('should validate that request sent with the right params', async () => {
+      assert.deepEqual(printedData.requestData.params, params)
+    })
+
+    it('should validate that request sent with the right data', async () => {
+      assert.deepEqual(printedData.requestData.data, data)
+    })
+
   })
 })
