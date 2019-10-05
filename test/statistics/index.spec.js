@@ -6,6 +6,7 @@ const server = require('./../../server')
 const ambiance = require('./../../src')
 
 
+// try to remove the log from the tests
 describe('Statistics module', () => {
   before(() => {
     server.init()
@@ -113,9 +114,45 @@ describe('Statistics module', () => {
     })
   })
 
-  // check if the user send other value of the default properties
-  // try to remove the log from the tests
-  // check if the responseData is undefind if user catch a http request
+  context('is default values change when we get them in the config', () => {
+    let consoleLogSpy
+    let printedData
+    const url = `${BASIC_URL}/basic`
+    const customTimeout = 10000
+    const customMaxContentLength = 100000
+    const proxy = {
+      host: '127.0.0.1',
+      port: 3002,
+    }
+
+    before(async () => {
+      consoleLogSpy = spy(console, 'log')
+      await axios.get(url, {
+        timeout: customTimeout,
+        maxContentLength: customMaxContentLength,
+        proxy,
+      })
+      const [data] = consoleLogSpy.getCall(1).args
+      printedData = data
+    })
+
+    after(() => {
+      consoleLogSpy.restore()
+    })
+
+
+    it('should validate that timeout property is not default', () => {
+      assert.ok(printedData.timeout, customTimeout)
+    })
+
+    it('should validate that proxy property is not default', async () => {
+      assert.deepEqual(printedData.proxy, proxy)
+    })
+
+    it('should validate that maxContentLength property is not default', async () => {
+      assert.ok(printedData.maxContentLength, customMaxContentLength)
+    })
+  })
 
   context('on request failed', () => {
     let consoleLogSpy
@@ -144,6 +181,25 @@ describe('Statistics module', () => {
       await axios.get(url).catch(() => {})
       const printedData = consoleLogSpy.getCall(1).args[0]
       assert.isFalse(printedData.isCompletedWithoutError)
+    })
+
+    it('should validate that responseData is undefined', async () => {
+      await axios.get(url).catch(() => {})
+      const printedData = consoleLogSpy.getCall(1).args[0]
+      assert.isUndefined(printedData.responseData)
+    })
+  })
+
+  context('is statistics object contains the right parameters for request', () => {
+    let consoleLogSpy
+    // const url = `${BASIC_URL}/basic`
+
+    before(() => {
+      consoleLogSpy = spy(console, 'log')
+    })
+
+    after(() => {
+      consoleLogSpy.restore()
     })
   })
 })
