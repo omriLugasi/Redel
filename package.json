@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "test": "mocha --recursive ./test",
+    "test": "ALLOW_LOG=false mocha --recursive ./test",
     "covarge:html": "nyc --r=html mocha --recursive ./test",
     "covarge": "nyc mocha --recursive ./test",
     "eslint:src": "eslint src/",

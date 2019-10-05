@@ -1,8 +1,8 @@
 const { ALLOW_LOG } = require('./../../config')
 
-const defaultConsole = Object.keys(console).reduce((acc, key) => {
+const fakeConsole = Object.keys(console).reduce((acc, key) => {
   acc[key] = () => {}
   return acc
 }, {})
 
-module.exports = ALLOW_LOG ? console : defaultConsole
+module.exports = ALLOW_LOG ? console : fakeConsole
