@@ -14,7 +14,7 @@ describe('Statistics module', () => {
     server.init()
     ambiance.use(axios, { statistics: true })
 
-    // change the console.log  function to anonymous function to work on the test in easier format
+    // change the console.log function to anonymous function to work on the test in easier format
     // eslint-disable-next-line no-console
     console.log = () => {}
 

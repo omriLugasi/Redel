@@ -5,7 +5,6 @@
   "license": "MIT",
   "scripts": {
     "test": "ALLOW_LOG=false mocha --recursive ./test",
-    "test:1": "mocha ./test/statistics",
     "covarge:html": "nyc --r=html mocha --recursive ./test",
     "covarge": "nyc mocha --recursive ./test",
     "eslint:src": "eslint src/",
