@@ -1,6 +1,6 @@
-const pending = require('./modules/pendingModule')
-const cancel = require('./modules/cancelModule')
-const statistics = require('./modules/statisticsModule')
+const pending = require('./plugins/pendingModule')
+const cancel = require('./plugins/cancelModule')
+const statistics = require('./plugins/statisticsModule')
 const logger = require('./services/logger')
 
 const basicModules = {
@@ -9,7 +9,7 @@ const basicModules = {
   statistics,
 }
 
-function Ambience() {
+function Redel() {
   this.signedModules = []
   return this
 }
@@ -25,7 +25,7 @@ function use(axios, config) {
       }
     })
   } else {
-    throw new Error('Ambiance: try to initialize the "use" function with wrong config type')
+    throw new Error('Redel: try to initialize the "use" function with wrong config type')
   }
 }
 
@@ -34,12 +34,12 @@ function getSignedMiddleware() {
 }
 
 
-Ambience.prototype.use = use
-Ambience.prototype.getSignedMiddleware = getSignedMiddleware
+Redel.prototype.use = use
+Redel.prototype.getSignedMiddleware = getSignedMiddleware
 
-Ambience.prototype.pending = pending
-Ambience.prototype.cancel = cancel
-Ambience.prototype.statistics = statistics
+Redel.prototype.pending = pending
+Redel.prototype.cancel = cancel
+Redel.prototype.statistics = statistics
 
 
-module.exports = new Ambience()
+module.exports = new Redel()

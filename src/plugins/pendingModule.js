@@ -20,7 +20,7 @@ class PendingModule {
 
   _add(key) {
     if (typeof key !== 'string') {
-      throw new Error('Ambiance pending request should work only with string')
+      throw new Error('Redel pending request should work only with string')
     }
     this._inner_set.add(key)
   }
