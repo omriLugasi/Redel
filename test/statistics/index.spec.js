@@ -5,17 +5,29 @@ const { BASIC_URL, generateQueryStringFromObject } = require('./../utils')
 const server = require('./../../server')
 const ambiance = require('./../../src')
 
-
-// try to remove the log from the tests
 describe('Statistics module', () => {
+  let consoleLogSpy
+  // eslint-disable-next-line no-console
+  const storeLog = console.log
+
   before(() => {
     server.init()
     ambiance.use(axios, { statistics: true })
+
+    // change the console.log  function to anonymous function to work on the test in easier format
+    // eslint-disable-next-line no-console
+    console.log = () => {}
+
+    consoleLogSpy = spy(console, 'log')
   })
 
   after(() => {
     server.close()
+    consoleLogSpy.restore()
+    // eslint-disable-next-line no-console
+    console.log = storeLog
   })
+
 
   context('is statistics sign to the main module', () => {
     it('should find statistics in the main module', () => {
@@ -25,16 +37,7 @@ describe('Statistics module', () => {
   })
 
   context('check if the basic printed data is valid', () => {
-    let consoleLogSpy
     const url = `${BASIC_URL}/basic`
-
-    before(() => {
-      consoleLogSpy = spy(console, 'log')
-    })
-
-    after(() => {
-      consoleLogSpy.restore()
-    })
 
     it('should call to the log function on the console instance 3 times', async () => {
       await axios.get(url)
@@ -43,26 +46,26 @@ describe('Statistics module', () => {
 
     it('should be the same url in the printedData and the url that send to the request', async () => {
       await axios.get(url)
-      const printedData = consoleLogSpy.getCall(1).args[0]
+      const printedData = consoleLogSpy.lastCall.args[0]
       assert.isTrue(consoleLogSpy.called)
       assert.ok(printedData.url, url)
     })
 
     it('should validate that end time bigger then start time', async () => {
       await axios.get(url)
-      const printedData = consoleLogSpy.getCall(1).args[0]
+      const printedData = consoleLogSpy.lastCall.args[0]
       assert.isAbove(printedData.endTime, printedData.startTime)
     })
 
     it('should validate that total time property include "ms" charters', async () => {
       await axios.get(url)
-      const printedData = consoleLogSpy.getCall(1).args[0]
+      const printedData = consoleLogSpy.lastCall.args[0]
       assert.include(printedData.totalTime, 'ms')
     })
 
     it('should validate that isCompletedWithoutError property exists', async () => {
       await axios.get(url)
-      const printedData = consoleLogSpy.getCall(1).args[0]
+      const printedData = consoleLogSpy.lastCall.args[0]
       assert.include(Object.keys(printedData), 'isCompletedWithoutError')
     })
 
@@ -70,44 +73,35 @@ describe('Statistics module', () => {
     it('should validate that method property equal to the printed data object', async () => {
       const method = 'get'
       await axios[method](url)
-      const printedData = consoleLogSpy.getCall(1).args[0]
+      const printedData = consoleLogSpy.lastCall.args[0]
       assert.ok(printedData.method, method)
     })
   })
 
   context('is statistics object has default properties', () => {
-    let consoleLogSpy
     const url = `${BASIC_URL}/basic`
-
-    before(() => {
-      consoleLogSpy = spy(console, 'log')
-    })
-
-    after(() => {
-      consoleLogSpy.restore()
-    })
 
     it('should validate that proxy is undefined by default', async () => {
       await axios.get(url)
-      const printedData = consoleLogSpy.getCall(1).args[0]
+      const printedData = consoleLogSpy.lastCall.args[0]
       assert.isUndefined(printedData.proxy)
     })
 
     it('should validate that timeout is 0 by default', async () => {
       await axios.get(url)
-      const printedData = consoleLogSpy.getCall(1).args[0]
+      const printedData = consoleLogSpy.lastCall.args[0]
       assert.isAtMost(printedData.timeout, 0)
     })
 
     it('should validate that maxContentLength is -1 by default', async () => {
       await axios.get(url)
-      const printedData = consoleLogSpy.getCall(1).args[0]
+      const printedData = consoleLogSpy.lastCall.args[0]
       assert.isAtMost(printedData.maxContentLength, -1)
     })
 
     it('should validate that requestData include the relevant properties', async () => {
       await axios.get(url)
-      const printedData = consoleLogSpy.getCall(1).args[0]
+      const printedData = consoleLogSpy.lastCall.args[0]
       assert.include(Object.keys(printedData.requestData), 'query')
       assert.include(Object.keys(printedData.requestData), 'params')
       assert.include(Object.keys(printedData.requestData), 'data')
@@ -115,7 +109,6 @@ describe('Statistics module', () => {
   })
 
   context('is default values change when we get them in the config', () => {
-    let consoleLogSpy
     let printedData
     const url = `${BASIC_URL}/basic`
     const customTimeout = 10000
@@ -126,18 +119,13 @@ describe('Statistics module', () => {
     }
 
     before(async () => {
-      consoleLogSpy = spy(console, 'log')
       await axios.get(url, {
         timeout: customTimeout,
         maxContentLength: customMaxContentLength,
         proxy,
       })
-      const [data] = consoleLogSpy.getCall(1).args
+      const [data] = consoleLogSpy.lastCall.args
       printedData = data
-    })
-
-    after(() => {
-      consoleLogSpy.restore()
     })
 
 
@@ -155,16 +143,7 @@ describe('Statistics module', () => {
   })
 
   context('on request failed', () => {
-    let consoleLogSpy
     const url = `${BASIC_URL}/basic/not-exist`
-
-    before(() => {
-      consoleLogSpy = spy(console, 'log')
-    })
-
-    after(() => {
-      consoleLogSpy.restore()
-    })
 
     it('should validate that spy functions called', async () => {
       await axios.get(url).catch(() => {})
@@ -173,25 +152,24 @@ describe('Statistics module', () => {
 
     it('should validate that the message is printed', async () => {
       await axios.get(url).catch(() => {})
-      const printedData = consoleLogSpy.getCall(1).args[0]
+      const printedData = consoleLogSpy.lastCall.args[0]
       assert.exists(printedData)
     })
 
     it('should validate that isCompletedWithoutError is false', async () => {
       await axios.get(url).catch(() => {})
-      const printedData = consoleLogSpy.getCall(1).args[0]
+      const printedData = consoleLogSpy.lastCall.args[0]
       assert.isFalse(printedData.isCompletedWithoutError)
     })
 
     it('should validate that responseData is undefined', async () => {
       await axios.get(url).catch(() => {})
-      const printedData = consoleLogSpy.getCall(1).args[0]
+      const printedData = consoleLogSpy.lastCall.args[0]
       assert.isUndefined(printedData.responseData)
     })
   })
 
   context('is statistics object contains the right parameters for request', () => {
-    let consoleLogSpy
     let printedData
     const url = `${BASIC_URL}/basic`
     const query = { queryParam1: '1', queryParam2: '2' }
@@ -200,13 +178,9 @@ describe('Statistics module', () => {
     const queryString = generateQueryStringFromObject(query)
 
     before(async () => {
-      consoleLogSpy = spy(console, 'log')
-      await axios.post(`${ url }?${ queryString }`, data, { params })
-      printedData = consoleLogSpy.getCall(1).args[0]
-    })
-
-    after(() => {
-      consoleLogSpy.restore()
+      await axios.post(`${url}?${queryString}`, data, { params })
+      const [args] = consoleLogSpy.lastCall.args
+      printedData = args
     })
 
     it('should validate that request sent with the right query params', async () => {
@@ -220,6 +194,5 @@ describe('Statistics module', () => {
     it('should validate that request sent with the right data', async () => {
       assert.deepEqual(printedData.requestData.data, data)
     })
-
   })
 })
