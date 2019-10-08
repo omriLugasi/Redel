@@ -71,9 +71,9 @@ describe('Pending middleware', () => {
     })
 
     it('should create new set object', () => {
-      const oldPointer = Redel.pending._inner_set
+      const oldPointer = Redel.pending.pendingRequestsSet
       Redel.pending.clear()
-      assert.notEqual(oldPointer, Redel.pending._inner_set)
+      assert.notEqual(oldPointer, Redel.pending.pendingRequestsSet)
     })
   })
 

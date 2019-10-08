@@ -3,7 +3,7 @@ const logger = require('./../services/logger')
 
 class Cancel {
   constructor() {
-    this._inner_set = {}
+    this.pendingRequestsSet = {}
     this._inner_set_group = {}
   }
 
@@ -36,15 +36,15 @@ class Cancel {
     const [key, groupKey] = this._generateKeys(config)
     const { CancelToken } = this._axios
     const source = CancelToken.source()
-    this._inner_set[key] = source
+    this.pendingRequestsSet[key] = source
     this._signToGroup(key, groupKey)
     return source.token
   }
 
   _delete(config) {
     const [key, groupKey] = this._generateKeys(config)
-    if (this._inner_set[key]) {
-      delete this._inner_set[key]
+    if (this.pendingRequestsSet[key]) {
+      delete this.pendingRequestsSet[key]
     }
     this._deleteFromGroup(key, groupKey)
   }
@@ -63,8 +63,8 @@ class Cancel {
 
   _onRequestSuccess(config) {
     const [key] = this._generateKeys(config)
-    if (this._inner_set[key]) {
-      this._inner_set[key].cancel(config)
+    if (this.pendingRequestsSet[key]) {
+      this.pendingRequestsSet[key].cancel(config)
     }
     const cancelToken = this._sign(config)
     return { ...config, cancelToken }
@@ -112,7 +112,7 @@ class Cancel {
     cancelGroup.forEach(key => {
       const [configUrl, method] = key.split(' -> ')
       const fakeConfig = { url: configUrl, method, headers: { groupKey } }
-      this._inner_set[key].cancel(fakeConfig)
+      this.pendingRequestsSet[key].cancel(fakeConfig)
       this._delete(fakeConfig)
     })
     delete this._inner_set_group[groupKey]

@@ -2,7 +2,7 @@ const url = require('url')
 
 class Statistics {
   constructor() {
-    this._inner_set = {}
+    this.pendingRequestsSet = {}
   }
 
   _onRequestSuccess(config) {
@@ -27,7 +27,7 @@ class Statistics {
   }
 
   _create(config) {
-    this._inner_set[config.url] = {
+    this.pendingRequestsSet[config.url] = {
       url: config.url,
       method: config.method,
       startTime: Date.now(),
@@ -44,19 +44,19 @@ class Statistics {
   }
 
   _delete(key) {
-    delete this._inner_set[key]
+    delete this.pendingRequestsSet[key]
   }
 
   _update({ config, data, status }) {
     const currentTime = Date.now()
-    const basicObject = this._inner_set[config.url]
+    const basicObject = this.pendingRequestsSet[config.url]
     const updateLogQuery = {
       endTime: currentTime,
       totalTime: `${currentTime - basicObject.startTime}ms`,
       responseData: data,
       isCompletedWithoutError: config.validateStatus(status),
     }
-    this._inner_set[config.url] = {
+    this.pendingRequestsSet[config.url] = {
       ...basicObject,
       ...updateLogQuery,
     }
@@ -65,7 +65,7 @@ class Statistics {
   _printByKey(key) {
     /* eslint-disable no-console */
     console.group(key)
-    console.log(this._inner_set[key])
+    console.log(this.pendingRequestsSet[key])
     console.groupEnd(key)
     /* eslint-disable no-console */
   }
