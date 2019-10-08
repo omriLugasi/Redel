@@ -4,8 +4,8 @@ const statistics = require('./plugins/statistics.plugin')
 const logger = require('./services/logger')
 
 /**
- * The Only Authorized plugins for this version
- * In the Future we want to let developers to create middlewares
+ * The Only Authorized plugins for this version.
+ * In the future we want to let developers to create middlewares
  * and use our API to create custom plugins
  */
 const AuthorizedPlugins = {
@@ -47,7 +47,7 @@ function use(axios, config) {
 /**
  * @description
  * Will return Array of singed plugins name
- * @returns {Strings["plugin-name"]}
+ * @returns ["plugin-name"]
  */
 function getSignedMiddleware() {
   return [...this.signedModules]
@@ -56,7 +56,7 @@ function getSignedMiddleware() {
 
 /**
  * @description
- * List of function that can be invoke from the main Redel Object
+ * List of functions that can be invoke from the main Redel Object
  * @param use - for init the library
  * @param getSignedMiddleware - to get the singed plugins as strings array
  */
@@ -71,7 +71,7 @@ Redel.prototype.getSignedMiddleware = getSignedMiddleware
  * @param cancel - A cancel plugin - plugin that give to the cancelToken a super powers,
  * cancel irrelevant request like nobody watch
  * @param statistics - A statistics plugin - print statistics on each request, for example
- * time, requestData, ResponseData, proxies, and much more ...
+ * time, requestData, responseData, proxies, and much more ...
  */
 Redel.prototype.pending = pending
 Redel.prototype.cancel = cancel

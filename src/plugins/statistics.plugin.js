@@ -2,7 +2,7 @@ const url = require('url')
 
 class Statistics {
   constructor() {
-    this.pendingRequestsSet = {}
+    this.statisticsRequestsMap = {}
   }
 
   _onRequestSuccess(config) {
@@ -27,7 +27,7 @@ class Statistics {
   }
 
   _create(config) {
-    this.pendingRequestsSet[config.url] = {
+    this.statisticsRequestsMap[config.url] = {
       url: config.url,
       method: config.method,
       startTime: Date.now(),
@@ -44,19 +44,19 @@ class Statistics {
   }
 
   _delete(key) {
-    delete this.pendingRequestsSet[key]
+    delete this.statisticsRequestsMap[key]
   }
 
   _update({ config, data, status }) {
     const currentTime = Date.now()
-    const basicObject = this.pendingRequestsSet[config.url]
+    const basicObject = this.statisticsRequestsMap[config.url]
     const updateLogQuery = {
       endTime: currentTime,
       totalTime: `${currentTime - basicObject.startTime}ms`,
       responseData: data,
       isCompletedWithoutError: config.validateStatus(status),
     }
-    this.pendingRequestsSet[config.url] = {
+    this.statisticsRequestsMap[config.url] = {
       ...basicObject,
       ...updateLogQuery,
     }
@@ -65,7 +65,7 @@ class Statistics {
   _printByKey(key) {
     /* eslint-disable no-console */
     console.group(key)
-    console.log(this.pendingRequestsSet[key])
+    console.log(this.statisticsRequestsMap[key])
     console.groupEnd(key)
     /* eslint-disable no-console */
   }

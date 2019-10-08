@@ -49,7 +49,7 @@
         // disallow process.exit()
         "no-process-exit": "off",
 
-        // restrict usage of specified node plugins
+        // restrict usage of specified node modules
         "no-restricted-modules": "off",
 
         // disallow use of synchronous methods (off by default)
