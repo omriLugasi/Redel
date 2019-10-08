@@ -1,6 +1,6 @@
 const axios = require('axios')
 const { assert } = require('chai')
-const ambiance = require('./../../src')
+const Redel = require('./../../src')
 const { BASIC_URL } = require('./../utils')
 const server = require('./../../server')
 
@@ -8,7 +8,7 @@ const cancelGroupKey = 'customGroupKey'
 
 describe('Cancel module', () => {
   before(() => {
-    ambiance.use(axios, { cancel: true })
+    Redel.use(axios, { cancel: true })
     server.init()
   })
 
@@ -38,7 +38,7 @@ describe('Cancel module', () => {
       })
 
       it('should validate that requests with "cancelGroupKey" canceled', done => {
-        ambiance.cancel.cancelAllGroupRequest(cancelGroupKey)
+        Redel.cancel.cancelAllGroupRequest(cancelGroupKey)
         setTimeout(() => {
           assert.ok(canceledRequestsTimes, 5)
           done()
@@ -57,7 +57,7 @@ describe('Cancel module', () => {
       })
 
       it('should validate that "cancelAllGroupRequests" cancel only the requests with the group key', done => {
-        ambiance.cancel.cancelAllGroupRequest('another-custom-group-key')
+        Redel.cancel.cancelAllGroupRequest('another-custom-group-key')
         setTimeout(() => {
           assert.equal(canceledRequestsTimes, 0)
           done()

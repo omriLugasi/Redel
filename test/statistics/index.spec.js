@@ -3,7 +3,7 @@ const { assert } = require('chai')
 const { spy } = require('sinon')
 const { BASIC_URL, generateQueryStringFromObject } = require('./../utils')
 const server = require('./../../server')
-const ambiance = require('./../../src')
+const Redel = require('./../../src')
 
 describe('Statistics module', () => {
   let consoleLogSpy
@@ -12,7 +12,7 @@ describe('Statistics module', () => {
 
   before(() => {
     server.init()
-    ambiance.use(axios, { statistics: true })
+    Redel.use(axios, { statistics: true })
 
     // change the console.log function to anonymous function to work on the test in easier format
     // eslint-disable-next-line no-console
@@ -31,8 +31,8 @@ describe('Statistics module', () => {
 
   context('is statistics sign to the main module', () => {
     it('should find statistics in the main module', () => {
-      assert.ok(ambiance.getSignedMiddleware()[0], 'statistics')
-      assert.ok(ambiance.getSignedMiddleware().length, 1)
+      assert.ok(Redel.getSignedMiddleware()[0], 'statistics')
+      assert.ok(Redel.getSignedMiddleware().length, 1)
     })
   })
 

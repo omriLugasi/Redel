@@ -1,7 +1,7 @@
 {
-  "name": "ambience",
-  "version": "1.0.0",
-  "main": "index.js",
+  "name": "redel",
+  "version": "0.6.0",
+  "main": "src/index.js",
   "license": "MIT",
   "scripts": {
     "test": "ALLOW_LOG=false mocha --recursive ./test",

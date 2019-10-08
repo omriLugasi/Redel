@@ -1,8 +1,8 @@
 const url = require('url')
 
-class StatisticsModule {
+class Statistics {
   constructor() {
-    this._inner_set = {}
+    this.statisticsRequestsMap = {}
   }
 
   _onRequestSuccess(config) {
@@ -27,7 +27,7 @@ class StatisticsModule {
   }
 
   _create(config) {
-    this._inner_set[config.url] = {
+    this.statisticsRequestsMap[config.url] = {
       url: config.url,
       method: config.method,
       startTime: Date.now(),
@@ -44,19 +44,19 @@ class StatisticsModule {
   }
 
   _delete(key) {
-    delete this._inner_set[key]
+    delete this.statisticsRequestsMap[key]
   }
 
   _update({ config, data, status }) {
     const currentTime = Date.now()
-    const basicObject = this._inner_set[config.url]
+    const basicObject = this.statisticsRequestsMap[config.url]
     const updateLogQuery = {
       endTime: currentTime,
       totalTime: `${currentTime - basicObject.startTime}ms`,
       responseData: data,
       isCompletedWithoutError: config.validateStatus(status),
     }
-    this._inner_set[config.url] = {
+    this.statisticsRequestsMap[config.url] = {
       ...basicObject,
       ...updateLogQuery,
     }
@@ -65,7 +65,7 @@ class StatisticsModule {
   _printByKey(key) {
     /* eslint-disable no-console */
     console.group(key)
-    console.log(this._inner_set[key])
+    console.log(this.statisticsRequestsMap[key])
     console.groupEnd(key)
     /* eslint-disable no-console */
   }
@@ -103,4 +103,4 @@ class StatisticsModule {
 }
 
 
-module.exports = new StatisticsModule()
+module.exports = new Statistics()
