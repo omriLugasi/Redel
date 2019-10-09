@@ -6,3 +6,10 @@
 - npm ignore
 - build process (remove irrelevant code)
 - CI
+
+
+
+Options
+----
+- cache module
+- differ module

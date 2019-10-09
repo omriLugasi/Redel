@@ -38,7 +38,7 @@ describe('Cancel module', () => {
       })
 
       it('should validate that requests with "cancelGroupKey" canceled', done => {
-        Redel.cancel.cancelAllGroupRequest(cancelGroupKey)
+        Redel.cancel.cancelGroupRequests(cancelGroupKey)
         setTimeout(() => {
           assert.ok(canceledRequestsTimes, 5)
           done()
@@ -57,7 +57,7 @@ describe('Cancel module', () => {
       })
 
       it('should validate that "cancelAllGroupRequests" cancel only the requests with the group key', done => {
-        Redel.cancel.cancelAllGroupRequest('another-custom-group-key')
+        Redel.cancel.cancelGroupRequests('another-custom-group-key')
         setTimeout(() => {
           assert.equal(canceledRequestsTimes, 0)
           done()

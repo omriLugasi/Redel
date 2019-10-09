@@ -62,7 +62,7 @@ class Pending {
     this.pendingRequestsSet.delete(key)
   }
 
-  /* EXPOSE FUNCTIONS */
+  /*  EXPOSE   */
 
   /**
    * @description

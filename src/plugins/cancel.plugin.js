@@ -1,6 +1,24 @@
 const url = require('url')
 const logger = require('./../services/logger')
 
+/**
+ * @description
+ * Cancel plugin is a plugin that wrap your requests
+ * before firing them to the server with cancellation functionality
+ *
+ * @further-information
+ * The cancel plugin work with 2 different functionalities:
+ * 1. single cancel
+ * 2. cancel by group key
+ *
+ * @Single
+ * Cancel request that still didn't return
+ * when a new request with the same method and pathname
+ * gonna be fired to the server
+ *
+ * @cancel-by-group-key
+ * Cancel all requests with the unique group key
+ */
 class Cancel {
   constructor() {
     this.cancelRequestMap = {}
@@ -8,6 +26,13 @@ class Cancel {
   }
 
 
+  /**
+   * @description
+   * Extract the url pathname method and cancelGroupKey if exist
+   * @param config
+   * @returns [requestKey, groupKey]
+   * @private
+   */
   _generateKeys(config) {
     const urlPathName = url.parse(config.url).pathname
     const requestKey = `${urlPathName} -> ${config.method}`
@@ -15,6 +40,13 @@ class Cancel {
     return [requestKey, groupKey]
   }
 
+  /**
+   * @description
+   * Return array of cancel objects that sign to the specific group key
+   * @param groupKey - string
+   * @returns [cancelObject]
+   * @private
+   */
   _getGroupByKey(groupKey) {
     return Array.isArray(this.cancelRequestGroupMap[groupKey])
       ? [...this.cancelRequestGroupMap[groupKey]]
@@ -32,6 +64,15 @@ class Cancel {
     this.cancelRequestGroupMap[groupKey] = [key]
   }
 
+  /**
+   * @description
+   * Sign the request to the cancelMainObject and,
+   * cancelMainGroupObject if a groupKey exists.
+   * Return an axios cancel token instance
+   * @param axios config
+   * @returns axios cancel token instance
+   * @private
+   */
   _sign(config) {
     const [key, groupKey] = this._generateKeys(config)
     const { CancelToken } = this._axios
@@ -41,6 +82,13 @@ class Cancel {
     return source.token
   }
 
+  /**
+   * @description
+   * Will delete the request only after the cancellation process execute
+   * Or Request resolved/rejected
+   * @param config
+   * @private
+   */
   _delete(config) {
     const [key, groupKey] = this._generateKeys(config)
     if (this.cancelRequestMap[key]) {
@@ -76,10 +124,8 @@ class Cancel {
     const isCanceledByAxios = this._axios.isCancel(error)
     this._delete(config)
     if (isCanceledByAxios) {
-      const { method, url: configUrl } = config
       logger.group('cancel request execute')
-      logger.log(`Method: [${method}]`)
-      logger.log(`URL: [${configUrl}]`)
+      logger.log(config)
       logger.groupEnd('cancel request execute')
       customError.isCanceled = true
     }
@@ -92,8 +138,15 @@ class Cancel {
   }
 
 
-  /** EXPOSE * */
+  /*  EXPOSE   */
 
+  /**
+   * @description
+   * This function is a must function in each plugin.
+   * The function should sign the plugin into the
+   * axios interceptors request and response
+   * @param axios
+   */
   applyMiddleware(axios) {
     this._axios = axios
     axios.interceptors.request.use(this._onRequestSuccess.bind(this))
@@ -103,7 +156,12 @@ class Cancel {
     )
   }
 
-  cancelAllGroupRequest(groupKey) {
+  /**
+   * @description
+   * Cancel all requests that belong to the groupKey
+   * @param groupKey
+   */
+  cancelGroupRequests(groupKey) {
     const cancelGroup = this.cancelRequestGroupMap[groupKey]
     if (!Array.isArray(cancelGroup)) {
       return
