@@ -1,7 +1,7 @@
 const axios = require('axios')
 const { assert } = require('chai')
 const { spy } = require('sinon')
-const { BASIC_URL, generateQueryStringFromObject } = require('./../utils')
+const { BASIC_URL, generateQueryStringFromObject, getSpyCallValue } = require('./../utils')
 const server = require('./../../server')
 const Redel = require('./../../src')
 
@@ -193,6 +193,34 @@ describe('Statistics module', () => {
 
     it('should validate that request sent with the right data', async () => {
       assert.deepEqual(printedData.requestData.data, data)
+    })
+  })
+
+  context('requests with the same url', () => {
+    const url = `${BASIC_URL}/basic?userId=123`
+
+    it('should check if two request with the same url and a different method are valid', async () => {
+      await Promise.all([
+        axios.get(url),
+        axios.post(url, { poi: true }),
+      ])
+      const postPrintedData = { ...consoleLogSpy.lastCall.args[0] }
+      assert.deepEqual(postPrintedData.requestData.data, { poi: true })
+      // check if the printed data of get request really printed
+      const getPrintedData = getSpyCallValue(consoleLogSpy, 3)
+      assert.equal(getPrintedData.method, 'get')
+      assert.equal(getPrintedData.url, url)
+    })
+
+    it('should check if two request with the same url and the same method are valid', async () => {
+      await Promise.all([
+        axios.patch(url),
+        // axios.patch(url),
+      ])
+      const patchPrintedDataSecond = { ...consoleLogSpy.lastCall.args[0] }
+      assert.equal(patchPrintedDataSecond.method, 'patch')
+      // const firstPatchPrintedRequest = getSpyCallValue(consoleLogSpy, 3)
+      // assert.equal(firstPatchPrintedRequest.method, 'patch')
     })
   })
 })

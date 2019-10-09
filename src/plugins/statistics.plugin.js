@@ -10,13 +10,17 @@ class Statistics {
     this.statisticsRequestsMap = {}
   }
 
+  _generateKey(config) {
+    return `${config.url} -> ${config.method}`
+  }
+
   _onRequestSuccess(config) {
     this._create(config)
     return config
   }
 
   _onResponseSuccess(response) {
-    const key = response.config.url
+    const key = this._generateKey(response.config)
     this._update(response)
     this._printByKey(key)
     this._delete(key)
@@ -24,7 +28,7 @@ class Statistics {
   }
 
   _onResponseFailed(error) {
-    const key = error.config.url
+    const key = this._generateKey(error.config)
     this._update(error)
     this._printByKey(key)
     this._delete(key)
@@ -38,7 +42,8 @@ class Statistics {
    * @private
    */
   _create(config) {
-    this.statisticsRequestsMap[config.url] = {
+    const key = this._generateKey(config)
+    this.statisticsRequestsMap[key] = {
       url: config.url,
       method: config.method,
       startTime: Date.now(),
@@ -66,15 +71,16 @@ class Statistics {
    * @private
    */
   _update({ config, data, status }) {
+    const key = this._generateKey(config)
     const currentTime = Date.now()
-    const basicObject = this.statisticsRequestsMap[config.url]
+    const basicObject = this.statisticsRequestsMap[key]
     const updateLogQuery = {
       endTime: currentTime,
       totalTime: `${currentTime - basicObject.startTime}ms`,
       responseData: data,
       isCompletedWithoutError: config.validateStatus(status),
     }
-    this.statisticsRequestsMap[config.url] = {
+    this.statisticsRequestsMap[key] = {
       ...basicObject,
       ...updateLogQuery,
     }
