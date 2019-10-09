@@ -1,5 +1,10 @@
 const url = require('url')
 
+/**
+ * @description
+ * Statistics plugin is a plugin that help you monitoring your requests
+ * by printing a very informative log about each request
+ */
 class Statistics {
   constructor() {
     this.statisticsRequestsMap = {}
@@ -26,6 +31,12 @@ class Statistics {
     return Promise.reject(error)
   }
 
+  /**
+   * @description
+   * Create the log object in the request build process
+   * @param config
+   * @private
+   */
   _create(config) {
     this.statisticsRequestsMap[config.url] = {
       url: config.url,
@@ -47,6 +58,13 @@ class Statistics {
     delete this.statisticsRequestsMap[key]
   }
 
+  /**
+   * @description
+   * Update the object that we create sooner (from the _create function),
+   * with the data from the response.
+   * @param config object
+   * @private
+   */
   _update({ config, data, status }) {
     const currentTime = Date.now()
     const basicObject = this.statisticsRequestsMap[config.url]
@@ -62,6 +80,13 @@ class Statistics {
     }
   }
 
+  /**
+   * @description
+   * print the informative object with console group
+   * to add better human readable format
+   * @param key
+   * @private
+   */
   _printByKey(key) {
     /* eslint-disable no-console */
     console.group(key)
@@ -71,6 +96,13 @@ class Statistics {
   }
 
 
+  /**
+   * @description
+   * build an object that include all the request data that send to the server
+   * @param config
+   * @returns {{query: {}, data: {}, params: {}}}
+   * @private
+   */
   _extractDataFromRequest(config) {
     const urlObject = url.parse(config.url)
     const query = {}
@@ -89,8 +121,15 @@ class Statistics {
   }
 
 
-  /* EXPOSE FUNCTIONS */
+  /* EXPOSE */
 
+  /**
+   * @description
+   * This function is a must function in each plugin.
+   * The function should sign the plugin into the
+   * axios interceptors request and response
+   * @param axios
+   */
   applyMiddleware(axios) {
     axios.interceptors.request.use(
       this._onRequestSuccess.bind(this),
