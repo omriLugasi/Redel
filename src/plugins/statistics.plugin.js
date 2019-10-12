@@ -1,5 +1,5 @@
 const url = require('url')
-
+const { generateUniqueRequestKey, statisticsUniqueRequestKey } = require('./../utils')
 /**
  * @description
  * Statistics plugin is a plugin that help you monitoring your requests
@@ -11,7 +11,10 @@ class Statistics {
   }
 
   _generateKey(config) {
-    return `${config.url} -> ${config.method}`
+    if (!config[statisticsUniqueRequestKey]) {
+      Object.assign(config, { [statisticsUniqueRequestKey]: generateUniqueRequestKey() })
+    }
+    return config[statisticsUniqueRequestKey]
   }
 
   _onRequestSuccess(config) {
@@ -22,7 +25,7 @@ class Statistics {
   _onResponseSuccess(response) {
     const key = this._generateKey(response.config)
     this._update(response)
-    this._printByKey(key)
+    this._printByKey(key, response.config.url)
     this._delete(key)
     return response
   }
@@ -30,7 +33,7 @@ class Statistics {
   _onResponseFailed(error) {
     const key = this._generateKey(error.config)
     this._update(error)
-    this._printByKey(key)
+    this._printByKey(key, error.config.url)
     this._delete(key)
     return Promise.reject(error)
   }
@@ -90,14 +93,15 @@ class Statistics {
    * @description
    * print the informative object with console group
    * to add better human readable format
-   * @param key
+   * @param key uuid4
+   * @param key request url
    * @private
    */
-  _printByKey(key) {
+  _printByKey(key, urlPath) {
     /* eslint-disable no-console */
-    console.group(key)
+    console.group(urlPath)
     console.log(this.statisticsRequestsMap[key])
-    console.groupEnd(key)
+    console.groupEnd()
     /* eslint-disable no-console */
   }
 

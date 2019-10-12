@@ -197,30 +197,31 @@ describe('Statistics module', () => {
   })
 
   context('requests with the same url', () => {
-    const url = `${BASIC_URL}/basic?userId=123`
+    const url = `${BASIC_URL}/time-out`
 
     it('should check if two request with the same url and a different method are valid', async () => {
+      const getRequestUrl = `${url}/10`
       await Promise.all([
-        axios.get(url),
-        axios.post(url, { poi: true }),
+        axios.get(getRequestUrl),
+        axios.post(`${url}/90`, { poi: true }),
       ])
       const postPrintedData = { ...consoleLogSpy.lastCall.args[0] }
       assert.deepEqual(postPrintedData.requestData.data, { poi: true })
       // check if the printed data of get request really printed
       const getPrintedData = getSpyCallValue(consoleLogSpy, 3)
       assert.equal(getPrintedData.method, 'get')
-      assert.equal(getPrintedData.url, url)
+      assert.equal(getPrintedData.url, getRequestUrl)
     })
 
     it('should check if two request with the same url and the same method are valid', async () => {
       await Promise.all([
-        axios.patch(url),
-        // axios.patch(url),
+        axios.patch(`${url}/10`),
+        axios.patch(`${url}/90`),
       ])
       const patchPrintedDataSecond = { ...consoleLogSpy.lastCall.args[0] }
       assert.equal(patchPrintedDataSecond.method, 'patch')
-      // const firstPatchPrintedRequest = getSpyCallValue(consoleLogSpy, 3)
-      // assert.equal(firstPatchPrintedRequest.method, 'patch')
+      const firstPatchPrintedRequest = getSpyCallValue(consoleLogSpy, 3)
+      assert.equal(firstPatchPrintedRequest.method, 'patch')
     })
   })
 })
