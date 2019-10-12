@@ -1,5 +1,5 @@
 const url = require('url')
-
+const { generateUniqueRequestKey, statisticsUniqueRequestKey } = require('./../utils')
 /**
  * @description
  * Statistics plugin is a plugin that help you monitoring your requests
@@ -10,23 +10,30 @@ class Statistics {
     this.statisticsRequestsMap = {}
   }
 
+  _obtainKey(config) {
+    if (!config[statisticsUniqueRequestKey]) {
+      Object.assign(config, { [statisticsUniqueRequestKey]: generateUniqueRequestKey() })
+    }
+    return config[statisticsUniqueRequestKey]
+  }
+
   _onRequestSuccess(config) {
     this._create(config)
     return config
   }
 
   _onResponseSuccess(response) {
-    const key = response.config.url
+    const key = this._obtainKey(response.config)
     this._update(response)
-    this._printByKey(key)
+    this._printByKey(key, response.config.url)
     this._delete(key)
     return response
   }
 
   _onResponseFailed(error) {
-    const key = error.config.url
+    const key = this._obtainKey(error.config)
     this._update(error)
-    this._printByKey(key)
+    this._printByKey(key, error.config.url)
     this._delete(key)
     return Promise.reject(error)
   }
@@ -38,7 +45,8 @@ class Statistics {
    * @private
    */
   _create(config) {
-    this.statisticsRequestsMap[config.url] = {
+    const key = this._obtainKey(config)
+    this.statisticsRequestsMap[key] = {
       url: config.url,
       method: config.method,
       startTime: Date.now(),
@@ -66,15 +74,16 @@ class Statistics {
    * @private
    */
   _update({ config, data, status }) {
+    const key = this._obtainKey(config)
     const currentTime = Date.now()
-    const basicObject = this.statisticsRequestsMap[config.url]
+    const basicObject = this.statisticsRequestsMap[key]
     const updateLogQuery = {
       endTime: currentTime,
       totalTime: `${currentTime - basicObject.startTime}ms`,
       responseData: data,
       isCompletedWithoutError: config.validateStatus(status),
     }
-    this.statisticsRequestsMap[config.url] = {
+    this.statisticsRequestsMap[key] = {
       ...basicObject,
       ...updateLogQuery,
     }
@@ -84,14 +93,15 @@ class Statistics {
    * @description
    * print the informative object with console group
    * to add better human readable format
-   * @param key
+   * @param key uuid4
+   * @param key request url
    * @private
    */
-  _printByKey(key) {
+  _printByKey(key, urlPath) {
     /* eslint-disable no-console */
-    console.group(key)
+    console.group(urlPath)
     console.log(this.statisticsRequestsMap[key])
-    console.groupEnd(key)
+    console.groupEnd()
     /* eslint-disable no-console */
   }
 
