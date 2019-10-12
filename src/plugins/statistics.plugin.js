@@ -10,7 +10,7 @@ class Statistics {
     this.statisticsRequestsMap = {}
   }
 
-  _generateKey(config) {
+  _obtainKey(config) {
     if (!config[statisticsUniqueRequestKey]) {
       Object.assign(config, { [statisticsUniqueRequestKey]: generateUniqueRequestKey() })
     }
@@ -23,7 +23,7 @@ class Statistics {
   }
 
   _onResponseSuccess(response) {
-    const key = this._generateKey(response.config)
+    const key = this._obtainKey(response.config)
     this._update(response)
     this._printByKey(key, response.config.url)
     this._delete(key)
@@ -31,7 +31,7 @@ class Statistics {
   }
 
   _onResponseFailed(error) {
-    const key = this._generateKey(error.config)
+    const key = this._obtainKey(error.config)
     this._update(error)
     this._printByKey(key, error.config.url)
     this._delete(key)
@@ -45,7 +45,7 @@ class Statistics {
    * @private
    */
   _create(config) {
-    const key = this._generateKey(config)
+    const key = this._obtainKey(config)
     this.statisticsRequestsMap[key] = {
       url: config.url,
       method: config.method,
@@ -74,7 +74,7 @@ class Statistics {
    * @private
    */
   _update({ config, data, status }) {
-    const key = this._generateKey(config)
+    const key = this._obtainKey(config)
     const currentTime = Date.now()
     const basicObject = this.statisticsRequestsMap[key]
     const updateLogQuery = {
