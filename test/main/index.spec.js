@@ -1,6 +1,8 @@
-const axios = require('axios')
+const axiosInstance = require('axios')
 const { assert } = require('chai')
 const Redel = require('./../../src')
+
+const axios = axiosInstance.create()
 
 describe('Test the main module', () => {
   context('validate main module with different types of params', () => {

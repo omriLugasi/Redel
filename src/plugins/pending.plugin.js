@@ -1,3 +1,6 @@
+const url = require('url')
+const { generateUniqueRequestKey, pendingUniqueRequestKey } = require('./../utils')
+
 /**
  * @description
  * Store information about requests in pending status.
@@ -11,7 +14,14 @@
 class Pending {
   constructor() {
     // hold the requests status to know if there are any pending requests
-    this.pendingRequestsSet = new Set()
+    this.pendingRequestsSet = {}
+  }
+
+  _obtainKey(config) {
+    if (!config[pendingUniqueRequestKey]) {
+      Object.assign(config, { [pendingUniqueRequestKey]: generateUniqueRequestKey() })
+    }
+    return config[pendingUniqueRequestKey]
   }
 
   /**
@@ -22,7 +32,8 @@ class Pending {
    * @private
    */
   _onRequestSuccess(config) {
-    this._add(config.url)
+    const key = this._obtainKey(config)
+    this._add(key, config.url)
     return config
   }
 
@@ -34,7 +45,8 @@ class Pending {
    * @private
    */
   _onResponseSuccess(response) {
-    this._delete(response.config.url)
+    const key = this._obtainKey(response.config)
+    this._delete(key)
     return response
   }
 
@@ -47,19 +59,17 @@ class Pending {
    * @private
    */
   _onResponseFailed(error) {
-    this._delete(error.config.url)
+    const key = this._obtainKey(error.config)
+    this._delete(key)
     return Promise.reject(error)
   }
 
-  _add(key) {
-    if (typeof key !== 'string') {
-      throw new Error('Redel pending request should work only with string')
-    }
-    this.pendingRequestsSet.add(key)
+  _add(key, urlPath) {
+    this.pendingRequestsSet[key] = url.parse(urlPath).pathname
   }
 
   _delete(key) {
-    this.pendingRequestsSet.delete(key)
+    delete this.pendingRequestsSet[key]
   }
 
   /*  EXPOSE   */
@@ -69,7 +79,7 @@ class Pending {
    * Reset the pendingRequestsSet
    */
   clear() {
-    this.pendingRequestsSet = new Set()
+    this.pendingRequestsSet = {}
   }
 
   /**
@@ -95,7 +105,7 @@ class Pending {
    * @returns {*[]}
    */
   getPendingRequests() {
-    return [...this.pendingRequestsSet]
+    return Object.values(this.pendingRequestsSet)
   }
 }
 

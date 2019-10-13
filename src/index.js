@@ -30,7 +30,6 @@ function Redel() {
  * true as value for example { pending: true }
  */
 function use(axios, config) {
-  this._axios = axios
   if (config && typeof config === 'object' && !Array.isArray(config)) {
     Object.keys(config).forEach((key) => {
       if (AuthorizedPlugins[key]) {

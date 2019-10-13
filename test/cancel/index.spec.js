@@ -1,12 +1,13 @@
-const axios = require('axios')
+const axiosInstance = require('axios')
 const { assert } = require('chai')
 const Redel = require('./../../src')
 const { BASIC_URL } = require('./../utils')
 const server = require('./../../server')
 
+const axios = axiosInstance.create()
 const cancelGroupKey = 'customGroupKey'
 
-describe('Cancel module', () => {
+describe('Cancel plugin', () => {
   before(() => {
     Redel.use(axios, { cancel: true })
     server.init()
@@ -39,10 +40,10 @@ describe('Cancel module', () => {
 
       it('should validate that requests with "cancelGroupKey" canceled', done => {
         Redel.cancel.cancelGroupRequests(cancelGroupKey)
-        setTimeout(() => {
+        setImmediate(() => {
           assert.ok(canceledRequestsTimes, 5)
           done()
-        }, 0)
+        })
       })
     })
 

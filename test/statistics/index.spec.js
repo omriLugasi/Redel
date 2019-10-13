@@ -1,11 +1,13 @@
-const axios = require('axios')
+const axiosInstance = require('axios')
 const { assert } = require('chai')
 const { spy } = require('sinon')
 const { BASIC_URL, generateQueryStringFromObject, getSpyCallValue } = require('./../utils')
 const server = require('./../../server')
 const Redel = require('./../../src')
 
-describe('Statistics module', () => {
+const axios = axiosInstance.create()
+
+describe('Statistics plugin', () => {
   let consoleLogSpy
   // eslint-disable-next-line no-console
   const storeLog = console.log
@@ -203,7 +205,7 @@ describe('Statistics module', () => {
       const getRequestUrl = `${url}/10`
       await Promise.all([
         axios.get(getRequestUrl),
-        axios.post(`${url}/90`, { poi: true }),
+        axios.post(`${url}/20`, { poi: true }),
       ])
       const postPrintedData = { ...consoleLogSpy.lastCall.args[0] }
       assert.deepEqual(postPrintedData.requestData.data, { poi: true })
@@ -216,7 +218,7 @@ describe('Statistics module', () => {
     it('should check if two request with the same url and the same method are valid', async () => {
       await Promise.all([
         axios.patch(`${url}/10`),
-        axios.patch(`${url}/90`),
+        axios.patch(`${url}/20`),
       ])
       const patchPrintedDataSecond = { ...consoleLogSpy.lastCall.args[0] }
       assert.equal(patchPrintedDataSecond.method, 'patch')
