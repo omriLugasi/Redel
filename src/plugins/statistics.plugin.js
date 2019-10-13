@@ -1,4 +1,5 @@
 const url = require('url')
+const qs = require('qs')
 const { generateUniqueRequestKey, statisticsUniqueRequestKey } = require('./../utils')
 /**
  * @description
@@ -115,14 +116,7 @@ class Statistics {
    */
   _extractDataFromRequest(config) {
     const urlObject = url.parse(config.url)
-    const query = {}
-    if (urlObject.query) {
-      urlObject.query.split('&').forEach(queryParam => {
-        const [key, value] = queryParam.split('=')
-        query[key] = value
-      })
-    }
-
+    const query = urlObject.query ? qs.parse(urlObject.query) : {}
     return {
       query,
       data: config.data || {},

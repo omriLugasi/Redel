@@ -18,8 +18,8 @@ describe('Cancel plugin', () => {
   })
 
   describe('cancel group requests', () => {
-    const config = { headers: { cancelGroupKey } }
-    const generateUrl = time => `${BASIC_URL}/time-out/${time}`
+    const ccgkParam = `?${Redel.cancel.ccgk}=${cancelGroupKey}`
+    const generateUrl = time => `${BASIC_URL}/time-out/${time}${ccgkParam}`
     const basicNum = 300
     let canceledRequestsTimes = 0
     const catchFn = e => {
@@ -31,11 +31,11 @@ describe('Cancel plugin', () => {
     context('basic cancel group logic', () => {
       before(() => {
         canceledRequestsTimes = 0
-        axios.get(generateUrl(basicNum + 20), config).catch(catchFn)
-        axios.get(generateUrl(basicNum + 50), config).catch(catchFn)
-        axios.get(generateUrl(basicNum + 70), config).catch(catchFn)
-        axios.get(generateUrl(basicNum + 100), config).catch(catchFn)
-        axios.get(generateUrl(basicNum + 190), config).catch(catchFn)
+        axios.get(generateUrl(basicNum + 20)).catch(catchFn)
+        axios.get(generateUrl(basicNum + 50)).catch(catchFn)
+        axios.get(generateUrl(basicNum + 70)).catch(catchFn)
+        axios.get(generateUrl(basicNum + 100)).catch(catchFn)
+        axios.get(generateUrl(basicNum + 190)).catch(catchFn)
       })
 
       it('should validate that requests with "cancelGroupKey" canceled', done => {
@@ -48,13 +48,11 @@ describe('Cancel plugin', () => {
     })
 
     context('check that cancel of one group dosen\'t effect on other group', () => {
-      const customConfig = { headers: { cancelGroupKey: 'custom' } }
-
       before(() => {
         canceledRequestsTimes = 0
-        axios.get(generateUrl(basicNum + 20), customConfig).catch(catchFn)
-        axios.get(generateUrl(basicNum + 30), customConfig).catch(catchFn)
-        axios.get(generateUrl(basicNum + 40), customConfig).catch(catchFn)
+        axios.get(generateUrl(basicNum + 20)).catch(catchFn)
+        axios.get(generateUrl(basicNum + 30)).catch(catchFn)
+        axios.get(generateUrl(basicNum + 40)).catch(catchFn)
       })
 
       it('should validate that "cancelAllGroupRequests" cancel only the requests with the group key', done => {
