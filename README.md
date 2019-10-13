@@ -1,5 +1,4 @@
 # ROADMAP
-- fix the issue with the config.url in the pending request and statistics request
 - Create your on invirte module
 - remove the header in the request from the cancelltion
 - npm package

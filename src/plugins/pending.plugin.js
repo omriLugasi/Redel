@@ -1,75 +1,85 @@
+const url = require('url')
+const { generateUniqueRequestKey, pendingUniqueRequestKey } = require('./../utils')
+
 /**
  * @description
  * Store information about requests in pending status.
  * expose function that help the developer know if there are any request in pending status.
  *
  * @further-information
- * The request url will be used as key, and the key will be store at pendingRequestsSet.
- * The url will be removed from pendingRequestsSet only when the request rejected or resolved,
+ * The request url will be used as value, and the key will be store at pendingRequestsObject.
+ * The url will be removed from pendingRequestsObject only when the request rejected or resolved,
  * until then the pending plugin will save the request as pending request
  */
 class Pending {
   constructor() {
     // hold the requests status to know if there are any pending requests
-    this.pendingRequestsSet = new Set()
+    this.pendingRequestsObject = {}
+  }
+
+  _obtainKey(config) {
+    if (!config[pendingUniqueRequestKey]) {
+      Object.assign(config, { [pendingUniqueRequestKey]: generateUniqueRequestKey() })
+    }
+    return config[pendingUniqueRequestKey]
   }
 
   /**
    * @description
-   * on request ready to send, add the url as key to the pendingRequestsSet
+   * on request ready to send, add the url as value and generate a key to the pendingRequestsObject
    * @param config
    * @returns {*}
    * @private
    */
   _onRequestSuccess(config) {
-    this._add(config.url)
+    const key = this._obtainKey(config)
+    this._add(key, config.url)
     return config
   }
 
   /**
    * @description
-   * on request resolved, remove the url as key from the pendingRequestsSet set
+   * on request resolved, remove the url from the pendingRequestsObject
    * @param response
    * @returns {*}
    * @private
    */
   _onResponseSuccess(response) {
-    this._delete(response.config.url)
+    const key = this._obtainKey(response.config)
+    this._delete(key)
     return response
   }
 
 
   /**
    * @description
-   * on request rejected, remove the url as key from the pendingRequestsSet set
+   * on request rejected, remove the url from the pendingRequestsObject
    * @param error
    * @returns {*}
    * @private
    */
   _onResponseFailed(error) {
-    this._delete(error.config.url)
+    const key = this._obtainKey(error.config)
+    this._delete(key)
     return Promise.reject(error)
   }
 
-  _add(key) {
-    if (typeof key !== 'string') {
-      throw new Error('Redel pending request should work only with string')
-    }
-    this.pendingRequestsSet.add(key)
+  _add(key, urlPath) {
+    this.pendingRequestsObject[key] = url.parse(urlPath).pathname
   }
 
   _delete(key) {
-    this.pendingRequestsSet.delete(key)
+    delete this.pendingRequestsObject[key]
   }
 
   /*  EXPOSE   */
 
   /**
    * @description
-   * Reset the pendingRequestsSet
+   * Reset the pendingRequestsObject
    */
   clear() {
-    this.pendingRequestsSet = new Set()
+    this.pendingRequestsObject = {}
   }
 
   /**
@@ -95,7 +105,7 @@ class Pending {
    * @returns {*[]}
    */
   getPendingRequests() {
-    return [...this.pendingRequestsSet]
+    return Object.values(this.pendingRequestsObject)
   }
 }
 

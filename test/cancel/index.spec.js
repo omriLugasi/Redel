@@ -1,12 +1,13 @@
-const axios = require('axios')
+const axiosInstance = require('axios')
 const { assert } = require('chai')
 const Redel = require('./../../src')
 const { BASIC_URL } = require('./../utils')
 const server = require('./../../server')
 
+const axios = axiosInstance.create()
 const cancelGroupKey = 'customGroupKey'
 
-describe('Cancel module', () => {
+describe('Cancel plugin', () => {
   before(() => {
     Redel.use(axios, { cancel: true })
     server.init()
@@ -39,10 +40,10 @@ describe('Cancel module', () => {
 
       it('should validate that requests with "cancelGroupKey" canceled', done => {
         Redel.cancel.cancelGroupRequests(cancelGroupKey)
-        setTimeout(() => {
+        setImmediate(() => {
           assert.ok(canceledRequestsTimes, 5)
           done()
-        }, 0)
+        })
       })
     })
 
@@ -58,10 +59,10 @@ describe('Cancel module', () => {
 
       it('should validate that "cancelAllGroupRequests" cancel only the requests with the group key', done => {
         Redel.cancel.cancelGroupRequests('another-custom-group-key')
-        setTimeout(() => {
+        setImmediate(() => {
           assert.equal(canceledRequestsTimes, 0)
           done()
-        }, 0)
+        })
       })
     })
   })
@@ -115,6 +116,15 @@ describe('Cancel module', () => {
 
       it('should validate that different params doesn\'t effect on the cancel logic', () => {
         assert.ok(canceledRequestsTimes, 2)
+      })
+    })
+
+    context('When the request failed without any connection to the plugin', () => {
+      it('should return the exception without indicator about the cancellation', done => {
+        axios.get(`${url}/not-exist`).catch(e => {
+          assert.isUndefined(e.isCanceled)
+          done()
+        })
       })
     })
   })

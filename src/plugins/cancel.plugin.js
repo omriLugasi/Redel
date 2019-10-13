@@ -1,3 +1,4 @@
+const { isCancel: isAxiosCancel, CancelToken } = require('axios')
 const url = require('url')
 const logger = require('./../services/logger')
 
@@ -75,7 +76,6 @@ class Cancel {
    */
   _sign(config) {
     const [key, groupKey] = this._generateKeys(config)
-    const { CancelToken } = this._axios
     const source = CancelToken.source()
     this.cancelRequestMap[key] = source
     this._signToGroup(key, groupKey)
@@ -121,7 +121,7 @@ class Cancel {
   _onResponseFailed(error) {
     const config = error.config || error.message
     const customError = { ...error, config }
-    const isCanceledByAxios = this._axios.isCancel(error)
+    const isCanceledByAxios = isAxiosCancel(error)
     this._delete(config)
     if (isCanceledByAxios) {
       logger.group('cancel request execute')
@@ -148,7 +148,6 @@ class Cancel {
    * @param axios
    */
   applyMiddleware(axios) {
-    this._axios = axios
     axios.interceptors.request.use(this._onRequestSuccess.bind(this))
     axios.interceptors.response.use(
       this._onResponseSuccess.bind(this),

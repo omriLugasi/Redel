@@ -34,7 +34,8 @@
   "nyc": {
     "exclude": [
       "server",
-      "test"
+      "test",
+      "src/services/logger"
     ]
   }
 }
