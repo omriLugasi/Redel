@@ -174,7 +174,6 @@ class Cancel {
     })
     delete this.cancelRequestGroupMap[groupKey]
   }
-
 }
 
 module.exports = new Cancel()
