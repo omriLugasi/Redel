@@ -1,6 +1,10 @@
 const { isCancel: isAxiosCancel, CancelToken } = require('axios')
 const url = require('url')
+const qs = require('qs')
 const logger = require('./../services/logger')
+
+// Cancel Custom Group Key
+const uniqueGroupKey = 'ccgk'
 
 /**
  * @description
@@ -24,6 +28,8 @@ class Cancel {
   constructor() {
     this.cancelRequestMap = {}
     this.cancelRequestGroupMap = {}
+    // for export
+    this.ccgk = uniqueGroupKey
   }
 
 
@@ -35,9 +41,11 @@ class Cancel {
    * @private
    */
   _generateKeys(config) {
-    const urlPathName = url.parse(config.url).pathname
+    const urlObject = url.parse(config.url)
+    const query = qs.parse(urlObject.query)
+    const urlPathName = urlObject.pathname
     const requestKey = `${urlPathName} -> ${config.method}`
-    const groupKey = config.headers.cancelGroupKey
+    const groupKey = query[uniqueGroupKey]
     return [requestKey, groupKey]
   }
 
@@ -108,6 +116,7 @@ class Cancel {
       }
     }
   }
+
 
   _onRequestSuccess(config) {
     const [key] = this._generateKeys(config)
