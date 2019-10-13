@@ -7,14 +7,14 @@ const { generateUniqueRequestKey, pendingUniqueRequestKey } = require('./../util
  * expose function that help the developer know if there are any request in pending status.
  *
  * @further-information
- * The request url will be used as key, and the key will be store at pendingRequestsSet.
- * The url will be removed from pendingRequestsSet only when the request rejected or resolved,
+ * The request url will be used as value, and the key will be store at pendingRequestsObject.
+ * The url will be removed from pendingRequestsObject only when the request rejected or resolved,
  * until then the pending plugin will save the request as pending request
  */
 class Pending {
   constructor() {
     // hold the requests status to know if there are any pending requests
-    this.pendingRequestsSet = {}
+    this.pendingRequestsObject = {}
   }
 
   _obtainKey(config) {
@@ -26,7 +26,7 @@ class Pending {
 
   /**
    * @description
-   * on request ready to send, add the url as key to the pendingRequestsSet
+   * on request ready to send, add the url as value and generate a key to the pendingRequestsObject
    * @param config
    * @returns {*}
    * @private
@@ -39,7 +39,7 @@ class Pending {
 
   /**
    * @description
-   * on request resolved, remove the url as key from the pendingRequestsSet set
+   * on request resolved, remove the url from the pendingRequestsObject
    * @param response
    * @returns {*}
    * @private
@@ -53,7 +53,7 @@ class Pending {
 
   /**
    * @description
-   * on request rejected, remove the url as key from the pendingRequestsSet set
+   * on request rejected, remove the url from the pendingRequestsObject
    * @param error
    * @returns {*}
    * @private
@@ -65,21 +65,21 @@ class Pending {
   }
 
   _add(key, urlPath) {
-    this.pendingRequestsSet[key] = url.parse(urlPath).pathname
+    this.pendingRequestsObject[key] = url.parse(urlPath).pathname
   }
 
   _delete(key) {
-    delete this.pendingRequestsSet[key]
+    delete this.pendingRequestsObject[key]
   }
 
   /*  EXPOSE   */
 
   /**
    * @description
-   * Reset the pendingRequestsSet
+   * Reset the pendingRequestsObject
    */
   clear() {
-    this.pendingRequestsSet = {}
+    this.pendingRequestsObject = {}
   }
 
   /**
@@ -105,7 +105,7 @@ class Pending {
    * @returns {*[]}
    */
   getPendingRequests() {
-    return Object.values(this.pendingRequestsSet)
+    return Object.values(this.pendingRequestsObject)
   }
 }
 
