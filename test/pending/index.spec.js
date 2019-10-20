@@ -1,13 +1,13 @@
-const axiosInstance = require('axios')
+const axios = require('axios')
 const { assert } = require('chai')
 const { BASIC_URL } = require('./../utils')
 const Redel = require('../../src/index')
 const server = require('./../../server')
 
-const axios = axiosInstance.create()
 
 describe('Pending plugin', () => {
   before(() => {
+    Redel.ejectAll()
     Redel.use(axios, { pending: true })
     server.init()
   })

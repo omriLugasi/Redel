@@ -1,10 +1,27 @@
-const axiosInstance = require('axios')
+const axios = require('axios')
 const { assert } = require('chai')
 const Redel = require('./../../src')
+const { BASIC_URL } = require('./../utils')
 
-const axios = axiosInstance.create()
 
 describe('Test the main module', () => {
+  beforeEach(() => {
+    Redel.ejectAll()
+  })
+
+  context('validate main module with injected axios param', () => {
+    const errorMessage = 'Redel must init with an axios instance!'
+
+    it('should throw exception if not sending axios instance', () => {
+      assert.throws(() => Redel.use({}, { statistics: true }), errorMessage)
+    })
+
+    it('should work with axios.create functionality', () => {
+      const axiosInstance = axios.create()
+      assert.doesNotThrow(() => Redel.use(axiosInstance, { statistics: true }), errorMessage)
+    })
+  })
+
   context('validate main module with different types of params', () => {
     const errorMessage = 'Redel: try to initialize the "use" function with wrong config type'
 
@@ -38,6 +55,37 @@ describe('Test the main module', () => {
       const singedMiddleware = Redel.getSignedMiddleware()
       assert.ok(singedMiddleware[0], key)
       assert.ok(singedMiddleware.length, 0)
+    })
+  })
+
+  context('validate that eject work well', () => {
+    context('eject all', () => {
+      it('should return 0 length of signed plugins', () => {
+        Redel.use(axios, { statistics: true, cancel: true })
+        Redel.ejectAll()
+        assert.isTrue(Redel.getSignedMiddleware().length === 0)
+      })
+    })
+
+    context('eject by key', () => {
+      it('should eject the relevant plugin by key', () => {
+        Redel.use(axios, { pending: true, cancel: true })
+        Redel.ejectByKey('pending')
+        assert.isTrue(Redel.getSignedMiddleware().length === 1)
+
+        axios.get(`${BASIC_URL}/basic`).catch(() => {})
+        axios.get(`${BASIC_URL}/basic`).catch(() => {})
+
+        setImmediate(() => {
+          assert.isTrue(Redel.pending.getPendingRequests().length === 0)
+        })
+      })
+
+      it('should not eject plugin that not exist', () => {
+        Redel.use(axios, { pending: true, cancel: true })
+        Redel.ejectByKey('not-exist-plugin-name')
+        assert.isTrue(Redel.getSignedMiddleware().length === 2)
+      })
     })
   })
 })

@@ -9,6 +9,7 @@ const { generateUniqueRequestKey, statisticsUniqueRequestKey, ensureGetConfig } 
 class Statistics {
   constructor() {
     this.statisticsRequestsMap = {}
+    this.interceptorsRef = {}
   }
 
   _obtainKey(config) {
@@ -147,13 +148,23 @@ class Statistics {
    * @param axios
    */
   applyMiddleware(axios) {
-    axios.interceptors.request.use(
+    this.interceptorsRef.request = axios.interceptors.request.use(
       this._onRequestSuccess.bind(this),
     )
-    axios.interceptors.response.use(
+    this.interceptorsRef.response = axios.interceptors.response.use(
       this._onResponseSuccess.bind(this),
       this._onResponseFailed.bind(this),
     )
+  }
+
+  /**
+   * @description
+   * eject the current axios interceptor from the axios instance
+   * @param axios
+   */
+  eject(axios) {
+    axios.interceptors.request.eject(this.interceptorsRef.request)
+    axios.interceptors.response.eject(this.interceptorsRef.response)
   }
 }
 
