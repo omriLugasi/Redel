@@ -15,7 +15,7 @@ const AuthorizedPlugins = {
 }
 
 function Redel() {
-  this.signedModules = []
+  this.signedPlugins = []
   return this
 }
 
@@ -35,7 +35,7 @@ function use(axios, config) {
       if (AuthorizedPlugins[key]) {
         logger.log(` ${key} Middleware was sign`)
         AuthorizedPlugins[key].applyMiddleware(axios)
-        this.signedModules.push(key)
+        this.signedPlugins.push(key)
       }
     })
   } else {
@@ -49,7 +49,7 @@ function use(axios, config) {
  * @returns ["plugin-name"]
  */
 function getSignedMiddleware() {
-  return [...this.signedModules]
+  return [...this.signedPlugins]
 }
 
 

@@ -1,6 +1,7 @@
 const { isCancel: isAxiosCancel, CancelToken } = require('axios')
 const url = require('url')
 const qs = require('qs')
+const { ensureGetConfig } = require('./../utils')
 const logger = require('./../services/logger')
 
 // Cancel Custom Group Key
@@ -85,7 +86,10 @@ class Cancel {
   _sign(config) {
     const [key, groupKey] = this._generateKeys(config)
     const source = CancelToken.source()
-    this.cancelRequestMap[key] = source
+    this.cancelRequestMap[key] = {
+      cancel: source.cancel,
+      config: { ...config },
+    }
     this._signToGroup(key, groupKey)
     return source.token
   }
@@ -120,15 +124,16 @@ class Cancel {
 
   _onRequestSuccess(config) {
     const [key] = this._generateKeys(config)
-    if (this.cancelRequestMap[key]) {
-      this.cancelRequestMap[key].cancel(config)
+    const cancelItem = this.cancelRequestMap[key]
+    if (cancelItem) {
+      cancelItem.cancel({ ...cancelItem.config, isCanceled: true })
     }
     const cancelToken = this._sign(config)
     return { ...config, cancelToken }
   }
 
   _onResponseFailed(error) {
-    const config = error.config || error.message
+    const config = ensureGetConfig(error)
     const customError = { ...error, config }
     const isCanceledByAxios = isAxiosCancel(error)
     this._delete(config)
@@ -176,10 +181,9 @@ class Cancel {
     }
 
     cancelGroup.forEach(key => {
-      const [configUrl, method] = key.split(' -> ')
-      const fakeConfig = { url: configUrl, method, headers: { groupKey } }
-      this.cancelRequestMap[key].cancel(fakeConfig)
-      this._delete(fakeConfig)
+      const cancelItem = this.cancelRequestMap[key]
+      cancelItem.cancel({ ...cancelItem.config })
+      this._delete(cancelItem.config)
     })
     delete this.cancelRequestGroupMap[groupKey]
   }

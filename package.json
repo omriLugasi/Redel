@@ -1,13 +1,12 @@
 {
   "name": "redel",
-  "version": "0.6.0-beta.1",
+  "version": "0.6.0-beta.3",
   "main": "dist/index.js",
   "license": "MIT",
   "description": "Promise based HTTP client for the browser and node.js",
   "scripts": {
-    "prebuild": "rm -rf ./dist && mkdir dist",
-    "build": "minify src/index.js --out-file dist/input.min.js --mangle.keepClassName",
-    "prepublish": "npm run test && npm run eslint:src && npm run eslint:test && npm run build",
+    "build": "ncp ./src ./dist --stopOnErr",
+    "prepublish": "yarn run test && yarn run eslint:src && yarn run eslint:test && yarn run build",
     "test": "ALLOW_LOG=false mocha --recursive ./test",
     "covarge:html": "nyc --r=html mocha --recursive ./test",
     "covarge": "nyc mocha --recursive ./test",
@@ -40,10 +39,10 @@
   "dependencies": {
     "axios": "0.19.0",
     "qs": "6.9.0",
+    "url": "^0.11.0",
     "uuid": "3.3.3"
   },
   "devDependencies": {
-    "babel-minify": "^0.5.1",
     "body-parser": "^1.19.0",
     "chai": "^4.2.0",
     "eslint": "^6.5.1",
@@ -52,6 +51,7 @@
     "express": "^4.17.1",
     "husky": "^3.0.7",
     "mocha": "^6.2.1",
+    "ncp": "^2.0.0",
     "nyc": "^14.1.1",
     "sinon": "^7.5.0"
   },
@@ -64,7 +64,8 @@
     "exclude": [
       "server",
       "test",
-      "src/services/logger"
+      "src/services/logger",
+      "dist"
     ]
   }
 }
