@@ -86,6 +86,12 @@ describe('Test the main module', () => {
         Redel.ejectByKey('not-exist-plugin-name')
         assert.isTrue(Redel.getSignedMiddleware().length === 2)
       })
+
+      it('should not eject plugin that exist but not sign', () => {
+        Redel.use(axios, { pending: true, statistics: true })
+        Redel.ejectByKey('cancel')
+        assert.isTrue(Redel.getSignedMiddleware().length === 2)
+      })
     })
   })
 })
