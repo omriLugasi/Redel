@@ -13,7 +13,7 @@ const isStringEqualToTrue = isEnvVariableTrue => isEnvVariableTrue === 'true'
  * Hold the general configuration of the library
  */
 const general = Object.freeze({
-  ALLOW_LOG: isStringEqualToTrue(env.ALLOW_LOG || 'true'),
+  ALLOW_LOG: isStringEqualToTrue(env.ALLOW_LOG || 'false'),
 })
 
 module.exports = {

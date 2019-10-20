@@ -1,6 +1,6 @@
 const url = require('url')
 const qs = require('qs')
-const { generateUniqueRequestKey, statisticsUniqueRequestKey } = require('./../utils')
+const { generateUniqueRequestKey, statisticsUniqueRequestKey, ensureGetConfig } = require('./../utils')
 /**
  * @description
  * Statistics plugin is a plugin that help you monitoring your requests
@@ -18,6 +18,10 @@ class Statistics {
     return config[statisticsUniqueRequestKey]
   }
 
+  _isRequestsMapContain(key) {
+    return typeof this.statisticsRequestsMap[key] !== 'undefined'
+  }
+
   _onRequestSuccess(config) {
     this._create(config)
     return config
@@ -32,9 +36,17 @@ class Statistics {
   }
 
   _onResponseFailed(error) {
-    const key = this._obtainKey(error.config)
-    this._update(error)
-    this._printByKey(key, error.config.url)
+    const config = ensureGetConfig(error)
+    const key = this._obtainKey(config)
+    // Those rows related to the cancel plugin, the issue is that
+    // we cancel request before it sign to the statistics plugin
+    // and because of that we cant find any reference to the desire object
+    const isRequestNotSignBeforeCanceled = config.isCanceled && !this._isRequestsMapContain(key)
+    if(isRequestNotSignBeforeCanceled) {
+      return Promise.reject(error)
+    }
+    this._update({ ...error, config })
+    this._printByKey(key, config.url)
     this._delete(key)
     return Promise.reject(error)
   }

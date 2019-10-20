@@ -1,11 +1,13 @@
-test/
-node_modules/
-covarge/
 .idea/
+node_modules/
+README.md
+.gitignore
+.eslintrc.json
 yarn-error.log/
+test/
+src/
+server/
 .nyc_output/
 coverage/
-server/
-README.md
-.eslintrc.json
+
 
