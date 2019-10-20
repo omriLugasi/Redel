@@ -1,11 +1,10 @@
-const axiosInstance = require('axios')
+const axios = require('axios')
 const { assert } = require('chai')
 const { spy } = require('sinon')
 const Redel = require('../../src/index')
 const server = require('../../server/index')
 const { BASIC_URL } = require('../utils/index')
 
-const axios = axiosInstance.create()
 
 describe('Test the main module with combination of statistics and cancel', () => {
   let consoleLogSpy
@@ -19,6 +18,7 @@ describe('Test the main module with combination of statistics and cancel', () =>
     console.log = () => {}
     consoleLogSpy = spy(console, 'log')
 
+    Redel.ejectAll()
     Redel.use(axios, { statistics: true, cancel: true, pending: true })
     server.init()
   })

@@ -1,10 +1,14 @@
-const axiosInstance = require('axios')
+const axios = require('axios')
 const { assert } = require('chai')
 const Redel = require('./../../src')
+const { BASIC_URL } = require('./../utils')
 
-const axios = axiosInstance.create()
 
 describe('Test the main module', () => {
+  beforeEach(() => {
+    Redel.ejectAll()
+  })
+
   context('validate main module with different types of params', () => {
     const errorMessage = 'Redel: try to initialize the "use" function with wrong config type'
 
@@ -38,6 +42,31 @@ describe('Test the main module', () => {
       const singedMiddleware = Redel.getSignedMiddleware()
       assert.ok(singedMiddleware[0], key)
       assert.ok(singedMiddleware.length, 0)
+    })
+  })
+
+  context('validate that eject work well', () => {
+    context('eject all', () => {
+      it('should return 0 length of signed plugins', () => {
+        Redel.use(axios, { statistics: true })
+        Redel.ejectAll()
+        assert.isTrue(Redel.getSignedMiddleware().length === 0)
+      })
+    })
+
+    context('eject by key', () => {
+      it('should return 0 length of signed plugins', () => {
+        Redel.use(axios, { pending: true, cancel: true })
+        Redel.ejectByKey('pending')
+        assert.isTrue(Redel.getSignedMiddleware().length === 1)
+
+        axios.get(`${BASIC_URL}/basic`).catch(() => {})
+        axios.get(`${BASIC_URL}/basic`).catch(() => {})
+
+        setImmediate(() => {
+          assert.isTrue(Redel.pending.getPendingRequests().length === 0)
+        })
+      })
     })
   })
 })

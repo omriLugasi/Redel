@@ -1,14 +1,14 @@
-const axiosInstance = require('axios')
+const axios = require('axios')
 const { assert } = require('chai')
 const Redel = require('./../../src')
 const { BASIC_URL } = require('./../utils')
 const server = require('./../../server')
 
-const axios = axiosInstance.create()
 const cancelGroupKey = 'customGroupKey'
 
 describe('Cancel plugin', () => {
   before(() => {
+    Redel.ejectAll()
     Redel.use(axios, { cancel: true })
     server.init()
   })

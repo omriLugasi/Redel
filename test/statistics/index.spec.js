@@ -1,11 +1,10 @@
-const axiosInstance = require('axios')
+const axios = require('axios')
 const { assert } = require('chai')
 const { spy } = require('sinon')
 const { BASIC_URL, generateQueryStringFromObject, getSpyCallValue } = require('./../utils')
 const server = require('./../../server')
 const Redel = require('./../../src')
 
-const axios = axiosInstance.create()
 
 describe('Statistics plugin', () => {
   let consoleLogSpy
@@ -14,6 +13,7 @@ describe('Statistics plugin', () => {
 
   before(() => {
     server.init()
+    Redel.ejectAll()
     Redel.use(axios, { statistics: true })
 
     // change the console.log function to anonymous function to work on the test in easier format

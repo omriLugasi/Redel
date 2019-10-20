@@ -30,6 +30,7 @@ function Redel() {
  * true as value for example { pending: true }
  */
 function use(axios, config) {
+  this._axios = axios
   if (config && typeof config === 'object' && !Array.isArray(config)) {
     Object.keys(config).forEach((key) => {
       if (AuthorizedPlugins[key]) {
@@ -55,12 +56,50 @@ function getSignedMiddleware() {
 
 /**
  * @description
+ * Let the use the option to delete all the Redel plugins
+ * from the axios instance (reset the Redel plugins)
+ */
+function ejectAll() {
+  this.signedPlugins.forEach(key => {
+    AuthorizedPlugins[key].eject(this._axios)
+  })
+  this.signedPlugins = []
+}
+
+
+/**
+ * @description
+ * eject plugin by key, current keys displayed on the "AuthorizedPlugins" object
+ * @param key
+ */
+function ejectByKey(key) {
+  if (!AuthorizedPlugins[key]) {
+    // eslint-disable-next-line no-console
+    console.error(`You are trying to eject plugin that not exist [${key}],
+     currently available plugins are [${Object.keys(AuthorizedPlugins).toString()}]`)
+    return
+  }
+  if (!this.signedPlugins.includes(key)) {
+    // eslint-disable-next-line no-console
+    console.error(`You are trying to eject plugin that not signed to the 
+    Redel instance [${key}], currently singed plugins are [${this.signedPlugins.toString()}]`)
+    return
+  }
+  AuthorizedPlugins[key].eject(this._axios)
+  this.signedPlugins = this.signedPlugins.filter(pluginName => pluginName !== key)
+}
+
+
+/**
+ * @description
  * List of functions that can be invoke from the main Redel Object
  * @param use - for init the library
  * @param getSignedMiddleware - to get the singed plugins as strings array
  */
 Redel.prototype.use = use
 Redel.prototype.getSignedMiddleware = getSignedMiddleware
+Redel.prototype.ejectAll = ejectAll
+Redel.prototype.ejectByKey = ejectByKey
 
 
 /**
