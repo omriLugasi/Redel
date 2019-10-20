@@ -19,6 +19,19 @@ function Redel() {
   return this
 }
 
+
+/**
+ * @description
+ * The best option for right now to check if param is a axios instance
+ * The check is if axios exist AND is interceptors exist on the object
+ * this double check provide us to check if it's axios instance or axios.create
+ * @param axios
+ * @returns {*|boolean}
+ */
+function isAxiosInstance(axios) {
+  return axios && typeof axios.interceptors === 'object'
+}
+
 /**
  * @description
  * "use" will search for desire and authorized plugins to invoke there "init" function,
@@ -30,6 +43,9 @@ function Redel() {
  * true as value for example { pending: true }
  */
 function use(axios, config) {
+  if (!isAxiosInstance(axios)) {
+    throw new Error('Redel must init with an axios instance!')
+  }
   this._axios = axios
   if (config && typeof config === 'object' && !Array.isArray(config)) {
     Object.keys(config).forEach((key) => {

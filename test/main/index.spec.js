@@ -9,6 +9,20 @@ describe('Test the main module', () => {
     Redel.ejectAll()
   })
 
+  context('validate main module axios param', () => {
+    const errorMessage = 'Redel must init with an axios instance!'
+
+    it('should throw exception if not sending axios instance', () => {
+      assert.throws(() => Redel.use({}, { statistics: true }), errorMessage)
+    })
+
+    it('should work with axios.create functionality', () => {
+      const axiosInstance = axios.create()
+      assert.doesNotThrow(() => Redel.use(axiosInstance, { statistics: true }), errorMessage)
+    })
+
+  })
+
   context('validate main module with different types of params', () => {
     const errorMessage = 'Redel: try to initialize the "use" function with wrong config type'
 
