@@ -1,9 +1,9 @@
 const axiosInstance = require('axios')
 const { assert } = require('chai')
 const { spy } = require('sinon')
-const Redel = require('./../../src')
-const server = require('./../../server')
-const { BASIC_URL } = require('./../utils')
+const Redel = require('../../src/index')
+const server = require('../../server/index')
+const { BASIC_URL } = require('../utils/index')
 
 const axios = axiosInstance.create()
 
@@ -37,25 +37,23 @@ describe('Test the main module with combination of statistics and cancel', () =>
     let canceledRequests = 0
     const catchFn = e => {
       if (e.isCanceled) {
-        canceledRequests++
+        canceledRequests += 1
       }
     }
     before(async () => {
       await Promise.all([
         axios.get(basicUrl).catch(catchFn),
         axios.get(basicUrl).catch(catchFn),
-        axios.get(basicUrl).catch(catchFn)
+        axios.get(basicUrl).catch(catchFn),
       ])
     })
 
     it('should cancel relevant requests', () => {
       assert.isTrue(canceledRequests === 2)
     })
-
   })
 
   context('is statistics plugin work well with combination', () => {
-
     before(async () => {
       await axios.get(basicUrl).catch(() => {})
       await axios.get(basicUrl).catch(() => {})
@@ -65,13 +63,10 @@ describe('Test the main module with combination of statistics and cancel', () =>
     it('should plugin find the relevant ', () => {
       assert.isTrue(consoleLogSpy.callCount === 6)
     })
-
   })
 
   context('is pending plugin work well with combination', () => {
-
     it('should save the pending requests according to the cancel plugin work', done => {
-
       Promise.all([
         axios.get(`${BASIC_URL}/time-out/12`).catch(() => {}),
         axios.get(`${BASIC_URL}/time-out/12`).catch(() => {}),
@@ -98,13 +93,12 @@ describe('Test the main module with combination of statistics and cancel', () =>
       ]
       Promise.all(promises)
         .then(() => {
-        assert.isTrue(Redel.pending.getPendingRequests().length === 0)
-        done()
-      })
+          assert.isTrue(Redel.pending.getPendingRequests().length === 0)
+          done()
+        })
       setImmediate(() => {
         assert.isTrue(Redel.pending.getPendingRequests().length === promises.length)
       })
     })
-
   })
 })

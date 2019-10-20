@@ -88,7 +88,7 @@ class Cancel {
     const source = CancelToken.source()
     this.cancelRequestMap[key] = {
       cancel: source.cancel,
-      config: { ...config }
+      config: { ...config },
     }
     this._signToGroup(key, groupKey)
     return source.token

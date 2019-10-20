@@ -42,7 +42,7 @@ class Statistics {
     // we cancel request before it sign to the statistics plugin
     // and because of that we cant find any reference to the desire object
     const isRequestNotSignBeforeCanceled = config.isCanceled && !this._isRequestsMapContain(key)
-    if(isRequestNotSignBeforeCanceled) {
+    if (isRequestNotSignBeforeCanceled) {
       return Promise.reject(error)
     }
     this._update({ ...error, config })
