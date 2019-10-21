@@ -53,8 +53,8 @@ describe('Test the main module', () => {
       const key = 'pending'
       Redel.use(axios, { [key]: true, customKey: true })
       const singedMiddleware = Redel.getSignedMiddleware()
-      assert.ok(singedMiddleware[0], key)
-      assert.ok(singedMiddleware.length, 0)
+      assert.isTrue(singedMiddleware[0] === key)
+      assert.isTrue(singedMiddleware.length === 1)
     })
   })
 
@@ -84,6 +84,12 @@ describe('Test the main module', () => {
       it('should not eject plugin that not exist', () => {
         Redel.use(axios, { pending: true, cancel: true })
         Redel.ejectByKey('not-exist-plugin-name')
+        assert.isTrue(Redel.getSignedMiddleware().length === 2)
+      })
+
+      it('should not eject plugin that exist but not sign', () => {
+        Redel.use(axios, { pending: true, statistics: true })
+        Redel.ejectByKey('cancel')
         assert.isTrue(Redel.getSignedMiddleware().length === 2)
       })
     })

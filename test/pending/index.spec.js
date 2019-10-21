@@ -22,7 +22,7 @@ describe('Pending plugin', () => {
 
   context('is Found in the main module', () => {
     it('should exist under the "pending" field', () => {
-      assert.ok(!!Redel.pending)
+      assert.exists(Redel.pending)
     })
   })
 

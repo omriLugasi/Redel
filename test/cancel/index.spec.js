@@ -41,7 +41,7 @@ describe('Cancel plugin', () => {
       it('should validate that requests with "cancelGroupKey" canceled', done => {
         Redel.cancel.cancelGroupRequests(cancelGroupKey)
         setImmediate(() => {
-          assert.ok(canceledRequestsTimes, 5)
+          assert.isTrue(canceledRequestsTimes === 5)
           done()
         })
       })
@@ -85,7 +85,7 @@ describe('Cancel plugin', () => {
       })
 
       it('should check if the number of canceled request is valid', () => {
-        assert.ok(canceledRequestsTimes, 4)
+        assert.isTrue(canceledRequestsTimes === 4)
       })
     })
 
@@ -100,7 +100,7 @@ describe('Cancel plugin', () => {
       })
 
       it('should validate that different methods on the same url sign under different keys', () => {
-        assert.ok(canceledRequestsTimes, 1)
+        assert.isTrue(canceledRequestsTimes === 1)
       })
     })
 
@@ -113,7 +113,7 @@ describe('Cancel plugin', () => {
       })
 
       it('should validate that different params doesn\'t effect on the cancel logic', () => {
-        assert.ok(canceledRequestsTimes, 2)
+        assert.isTrue(canceledRequestsTimes === 2)
       })
     })
 
