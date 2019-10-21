@@ -1,7 +1,9 @@
 # ROADMAP
+- Informative README
 - Create your on invirte module
 - CI
-- Informative README
+- https://coveralls.io/
+- Cdn implementation
 
 
 

@@ -4,3 +4,41 @@
 [![npm downloads](https://img.shields.io/npm/dm/redel.svg?style=flat-square)](http://npm-stat.com/charts.html?package=redel)
 ![license: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
 
+A middleware library for promise based axios for the browser and nodeJs
+
+## plugins
+---
+- Clean
+- Statistics
+- pending
+
+
+## Installing
+
+Using npm:
+
+```bash
+$ npm install redel
+```
+
+Using yarn:
+
+```bash
+$ yarn add redel
+```
+
+## Example
+
+Performing a basic use
+
+```js
+
+    const Redel = require('redel')
+    const axios = require('axios')
+
+    const config = { statistics: true }
+    Redel.use(axios, config)
+
+```
+
+
