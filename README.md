@@ -7,9 +7,9 @@
 A middleware library for promise based axios for the browser and nodeJs
 
 ## plugins
-- Clean
+- Cancel
 - Statistics
-- pending
+- Pending
 
 
 ## Installing
