@@ -6,11 +6,16 @@
 
 A middleware library for promise based axios for the browser and nodeJs
 
-## plugins
+## Plugins
 - Cancel
 - Statistics
 - Pending
 
+## Redel Module
+- use
+- getSignedMiddleware
+- ejectByKey
+- ejectAll
 
 ## Installing
 
@@ -80,7 +85,7 @@ Performing usage with axios.create
   gonna be fired to the server.
 
  * **Cancel by group key** <br />
-  Cancel all requests with the **unique group key**
+  Cancel all requests with the **unique group key (ccgk)**
 
 
 **Usage - Single**
@@ -125,11 +130,12 @@ const axios = require('axios')
 
 Redel.use(axios, { cancel: true })
 const cancelGroupKey = 'customCancelGroupKey'
-// the group key currently will be a query param
-// the implemenetation like below will be
+
+// the group key currently will be a query param the implementation like below will be
 // "protocol://url:port?ccgk=customGroupKey"
 const ccgkParam = `${Redel.cancel.ccgk}=${cancelGroupKey}`
 const basicUrl = 'https://jsonplaceholder.typicode.com/todos'
+
 let canceledReqeuests = 0
 
 // We can check if the catch function triggered by the Redel cancel plugin
