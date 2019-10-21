@@ -75,11 +75,13 @@ Performing usage with axios.create
   2. Cancel by group key
 
  * Single
+
   Cancel request that still didn't return from the server
   when a new request with the same method and pathname
   gonna be fired to the server.
 
  * Cancel by group key
+
   Cancel all requests with the unique group key
 
 
