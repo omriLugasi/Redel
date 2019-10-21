@@ -37,11 +37,11 @@ Performing a basic usage
 
 ```js
 
-    const Redel = require('redel')
-    const axios = require('axios')
+const Redel = require('redel')
+const axios = require('axios')
 
-    const config = { statistics: true }
-    Redel.use(axios, config)
+const config = { statistics: true }
+Redel.use(axios, config)
 
 ```
 
@@ -49,11 +49,11 @@ Performing usage with multiple plugins
 
 ```js
 
-    const Redel = require('redel')
-    const axios = require('axios')
+const Redel = require('redel')
+const axios = require('axios')
 
-    const config = { statistics: true, cancel: true, pending: true }
-    Redel.use(axios, config)
+const config = { statistics: true, cancel: true, pending: true }
+Redel.use(axios, config)
 
 ```
 
@@ -61,12 +61,12 @@ Performing usage with axios.create
 
 ```js
 
-    const Redel = require('redel')
-    const axios = require('axios')
-    const axiosInstance = axios.create()
+const Redel = require('redel')
+const axios = require('axios')
+const axiosInstance = axios.create()
 
-    const config = { statistics: true, cancel: true, pending: true }
-    Redel.use(axiosInstance, config)
+const config = { statistics: true, cancel: true, pending: true }
+Redel.use(axiosInstance, config)
 
 ```
 
@@ -172,18 +172,15 @@ Examples
  ```js
 const Redel = require('redel')
 const axios = require('axios')
+
 const basicUrl = 'https://jsonplaceholder.typicode.com/todos'
 
 Redel.use(axios, { pending: true })
 
-const mount = () => {
-  axios.get(`${basicUrl}/1`)
-  setTimeout(() => {
-    console.log(Redel.pending.getPendingRequests()) // ["/todos/1"]
-  })
-}
-
-mount()
+axios.get(`${basicUrl}/1`)
+setTimeout(() => {
+  console.log(Redel.pending.getPendingRequests()) // ["/todos/1"]
+})
 
  ```
 
@@ -203,7 +200,50 @@ window.addEventListener("beforeunload", function (e) {
 
 ## Statistics
 
+ Monitoring your requests by printing a very informative log about each request.<br />
 
+Examples
+ ```js
+
+ const url = 'https://jsonplaceholder.typicode.com/todos/1'
+
+ Redel.use(axios, { statistics: true })
+
+ axios.get(url)
+
+ ```
+
+ The above will print the js object below
+
+ ```js
+{
+    isCompletedWithoutError: true,
+    maxContentLength: -1,
+    method: "get",
+    timeout: 0,
+    proxy: undefined,
+    requestData: {query: {}, data: {}, params: {}},
+    requestHeaders: {
+        common: {Accept: "application/json", "text/plain": "*/*"},
+        delete: {},
+        get: {},
+        head: {},
+        patch: {"Content-Type": "application/x-www-form-urlencoded"},
+        post: {"Content-Type": "application/x-www-form-urlencoded"},
+        put: {"Content-Type": "application/x-www-form-urlencoded"},
+    },
+    responseData: {userId: 1, id: 1, title: "delectus aut autem", completed: false},
+    endTime: 1571698420250,
+    startTime: 1571698420167,
+    totalTime: "83ms",
+    url: "https://jsonplaceholder.typicode.com/todos/1",
+}
+
+ ```
+
+| property | Type | Description |
+| --- | --- | --- |
+| isCompletedWithoutError | Boolean | information if the request done with any error |
 
 
 
