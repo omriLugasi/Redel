@@ -71,31 +71,73 @@ Usage - Single
 
 ```js
 
-    const Redel = require('redel')
-    const axios = require('axios')
+const Redel = require('redel')
+const axios = require('axios')
 
-    Redel.use(axios, { cancel: true })
-    let canceledReqeuests = 0
+Redel.use(axios, { cancel: true })
+let canceledReqeuests = 0
+
+// we can check if the catch function invoked by the Redel cancelltion
+// By basic check e.isCanceled
+
+// We can check if the catch function triggered by the Redel cancel plugin
+// with the following condition `!!e.isCanceled`
+const catchFn = e => {
+  if (e.isCanceled) {
+    canceledReqeuests += 1
+  }
+}
+
+const mount = async () => {
+  const basicUrl = 'https://jsonplaceholder.typicode.com/todos'
+  await Promise.all([
+    axios.get(`${basicUrl}?group=3`).catch(catchFn), // canceled
+    axios.get(`${basicUrl}?group=124`).catch(catchFn), // canceled
+    axios.get(`${basicUrl}?group=1911`).catch(catchFn), // canceled
+    axios.get(`${basicUrl}?group=00001`).catch(catchFn) // resolved
+  ])
+  console.log({ canceledReqeuests }) // { canceledReqeuests: 3 }
+}
+
+mount()
+
+```
 
 
-    const catchFn = e => {
-      if (e.isCanceled) {
-        canceledReqeuests += 1
-      }
-    }
+Usage - Cancel by group key
 
-    const mount = async () => {
-      const basicUrl = 'https://jsonplaceholder.typicode.com/todos'
-      await Promise.all([
-        axios.get(`${basicUrl}?group=3`).catch(catchFn), // canceled
-        axios.get(`${basicUrl}?group=124`).catch(catchFn), // canceled
-        axios.get(`${basicUrl}?group=1911`).catch(catchFn), // canceled
-        axios.get(`${basicUrl}?group=00001`).catch(catchFn) // resolved
-      ])
-      console.log({ canceledReqeuests }) // { canceledReqeuests: 3 }
-    }
+```js
 
-      mount()
+Redel.use(axios, { cancel: true })
+const cancelGroupKey = 'customCancelGroupKey'
+// the group key currently will be a query param
+// the implemenetation like below will be
+// "protocol://url:port?ccgk=customGroupKey"
+const ccgkParam = `${Redel.cancel.ccgk}=${cancelGroupKey}`
+const basicUrl = 'https://jsonplaceholder.typicode.com/todos'
+let canceledReqeuests = 0
+
+// We can check if the catch function triggered by the Redel cancel plugin
+// with the following condition `!!e.isCanceled`
+const catchFn = e => {
+  if (e.isCanceled) {
+    canceledReqeuests += 1
+  }
+}
+
+const mount = () => {
+  axios.get(`${basicUrl}/1?${ccgkParam}`).catch(catchFn),
+  axios.get(`${basicUrl}/2?${ccgkParam}`).catch(catchFn),
+  axios.get(`${basicUrl}/3?${ccgkParam}`).catch(catchFn),
+  axios.get(`${basicUrl}/4?${ccgkParam}`).catch(catchFn)
+}
+
+mount()
+
+// beforeDestroyed run the commend below to ensure that
+// all pending requests would be canceled
+Redel.cancel.cancelGroupRequests(cancelGroupKey)
+
 
 ```
 
