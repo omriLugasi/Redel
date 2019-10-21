@@ -74,18 +74,16 @@ Performing usage with axios.create
   1. Single cancel
   2. Cancel by group key
 
- * Single
-  <br />
+ * **Single** <br />
   Cancel request that still didn't return from the server
-  when a new request with the same method and pathname
+  when a new request with the same **method and pathname**
   gonna be fired to the server.
 
- * Cancel by group key
-  <br />
-  Cancel all requests with the unique group key
+ * **Cancel by group key** <br />
+  Cancel all requests with the **unique group key**
 
 
-Usage - Single
+**Usage - Single**
 
 ```js
 
@@ -119,7 +117,7 @@ mount()
 ```
 
 
-Usage - Cancel by group key
+**Usage - Cancel by group key**
 
 ```js
 const Redel = require('redel')
