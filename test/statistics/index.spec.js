@@ -33,24 +33,24 @@ describe('Statistics plugin', () => {
 
   context('is statistics sign to the main module', () => {
     it('should find statistics in the main module', () => {
-      assert.ok(Redel.getSignedMiddleware()[0], 'statistics')
-      assert.ok(Redel.getSignedMiddleware().length, 1)
+      assert.isTrue(Redel.getSignedMiddleware()[0] === 'statistics')
+      assert.isTrue(Redel.getSignedMiddleware().length === 1)
     })
   })
 
   context('check if the basic printed data is valid', () => {
     const url = `${BASIC_URL}/basic`
 
-    it('should call to the log function on the console instance 3 times', async () => {
+    it('should call to the log function on the console instance 2 times', async () => {
       await axios.get(url)
-      assert.ok(consoleLogSpy.callCount, 3)
+      assert.isTrue(consoleLogSpy.callCount === 2)
     })
 
     it('should be the same url in the printedData and the url that send to the request', async () => {
       await axios.get(url)
       const printedData = consoleLogSpy.lastCall.args[0]
       assert.isTrue(consoleLogSpy.called)
-      assert.ok(printedData.url, url)
+      assert.isTrue(printedData.url === url)
     })
 
     it('should validate that end time bigger then start time', async () => {
@@ -76,7 +76,7 @@ describe('Statistics plugin', () => {
       const method = 'get'
       await axios[method](url)
       const printedData = consoleLogSpy.lastCall.args[0]
-      assert.ok(printedData.method, method)
+      assert.isTrue(printedData.method === method)
     })
   })
 
@@ -132,7 +132,7 @@ describe('Statistics plugin', () => {
 
 
     it('should validate that timeout property is not default', () => {
-      assert.ok(printedData.timeout, customTimeout)
+      assert.isTrue(printedData.timeout === customTimeout)
     })
 
     it('should validate that proxy property is not default', async () => {
@@ -140,16 +140,20 @@ describe('Statistics plugin', () => {
     })
 
     it('should validate that maxContentLength property is not default', async () => {
-      assert.ok(printedData.maxContentLength, customMaxContentLength)
+      assert.isTrue(printedData.maxContentLength === customMaxContentLength)
     })
   })
 
   context('on request failed', () => {
     const url = `${BASIC_URL}/basic/not-exist`
 
+    before(() => {
+      consoleLogSpy.resetHistory()
+    })
+
     it('should validate that spy functions called', async () => {
       await axios.get(url).catch(() => {})
-      assert.ok(consoleLogSpy.callCount, 3)
+      assert.isTrue(consoleLogSpy.callCount === 2)
     })
 
     it('should validate that the message is printed', async () => {
