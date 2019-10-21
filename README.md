@@ -67,21 +67,35 @@ Performing usage with axios.create
 
 ## Cancel Plugin
 
-Usage
+Usage - Single
 
 ```js
 
     const Redel = require('redel')
     const axios = require('axios')
 
-    const config = { pending: true }
-    Redel.use(axios, config)
+    Redel.use(axios, { cancel: true })
+    let canceledReqeuests = 0
 
-    // ... code
-    // ... code
-    // ... code
 
-    axios.get('https://jsonplaceholder.typicode.com/todos/1')
+    const catchFn = e => {
+      if (e.isCanceled) {
+        canceledReqeuests += 1
+      }
+    }
+
+    const mount = async () => {
+      const basicUrl = 'https://jsonplaceholder.typicode.com/todos'
+      await Promise.all([
+        axios.get(`${basicUrl}?group=3`).catch(catchFn), // canceled
+        axios.get(`${basicUrl}?group=124`).catch(catchFn), // canceled
+        axios.get(`${basicUrl}?group=1911`).catch(catchFn), // canceled
+        axios.get(`${basicUrl}?group=00001`).catch(catchFn) // resolved
+      ])
+      console.log({ canceledReqeuests }) // { canceledReqeuests: 3 }
+    }
+
+      mount()
 
 ```
 
