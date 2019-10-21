@@ -162,6 +162,51 @@ Redel.cancel.cancelGroupRequests(cancelGroupKey)
 
 ```
 
+## Pending Plugin
+
+ Monitoring your pending requests.<br />
+ Expose functionality to get your pending requests.
+
+Examples
+
+ ```js
+const Redel = require('redel')
+const axios = require('axios')
+const basicUrl = 'https://jsonplaceholder.typicode.com/todos'
+
+Redel.use(axios, { pending: true })
+
+const mount = () => {
+  axios.get(`${basicUrl}/1`)
+  setTimeout(() => {
+    console.log(Redel.pending.getPendingRequests()) // ["/todos/1"]
+  })
+}
+
+mount()
+
+ ```
+
+A common usage of this functionality can be found in "beforeunload"
+
+ ```js
+// if user has any pending request, display warning message
+window.addEventListener("beforeunload", function (e) {
+  if (Redel.pending.getPendingRequests().length) {
+    // there are pending requests
+    // display a warning message
+  }
+  // unload the page
+})
+ ```
+
+
+## Statistics
+
+
+
+
+
 
 
 

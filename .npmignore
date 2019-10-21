@@ -1,6 +1,7 @@
 .idea/
 node_modules/
 README.md
+ROAD_MAP.md
 .gitignore
 .eslintrc.json
 yarn-error.log/
