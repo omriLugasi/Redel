@@ -11,7 +11,7 @@ A middleware library for promise based axios for the browser and nodeJs
 - Statistics
 - Pending
 
-## Redel Module
+## Redel Top Level API
 - use
 - getSignedMiddleware
 - ejectByKey
