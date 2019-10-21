@@ -7,7 +7,6 @@
 A middleware library for promise based axios for the browser and nodeJs
 
 ## plugins
----
 - Clean
 - Statistics
 - pending
@@ -29,7 +28,7 @@ $ yarn add redel
 
 ## Example
 
-Performing a basic use
+Performing a basic usage
 
 ```js
 
@@ -40,5 +39,55 @@ Performing a basic use
     Redel.use(axios, config)
 
 ```
+
+Performing usage with multiple plugins
+
+```js
+
+    const Redel = require('redel')
+    const axios = require('axios')
+
+    const config = { statistics: true, cancel: true, pending: true }
+    Redel.use(axios, config)
+
+```
+
+Performing usage with axios.create
+
+```js
+
+    const Redel = require('redel')
+    const axios = require('axios')
+    const axiosInstance = axios.create()
+
+    const config = { statistics: true, cancel: true, pending: true }
+    Redel.use(axiosInstance, config)
+
+```
+
+## Cancel Plugin
+
+Usage
+
+```js
+
+    const Redel = require('redel')
+    const axios = require('axios')
+
+    const config = { pending: true }
+    Redel.use(axios, config)
+
+    // ... code
+    // ... code
+    // ... code
+
+    axios.get('https://jsonplaceholder.typicode.com/todos/1')
+
+```
+
+
+
+
+
 
 
