@@ -77,9 +77,6 @@ const axios = require('axios')
 Redel.use(axios, { cancel: true })
 let canceledReqeuests = 0
 
-// we can check if the catch function invoked by the Redel cancelltion
-// By basic check e.isCanceled
-
 // We can check if the catch function triggered by the Redel cancel plugin
 // with the following condition `!!e.isCanceled`
 const catchFn = e => {
