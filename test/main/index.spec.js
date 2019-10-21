@@ -53,8 +53,8 @@ describe('Test the main module', () => {
       const key = 'pending'
       Redel.use(axios, { [key]: true, customKey: true })
       const singedMiddleware = Redel.getSignedMiddleware()
-      assert.ok(singedMiddleware[0], key)
-      assert.ok(singedMiddleware.length, 0)
+      assert.isTrue(singedMiddleware[0] === key)
+      assert.isTrue(singedMiddleware.length === 1)
     })
   })
 
