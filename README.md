@@ -240,10 +240,22 @@ Examples
 }
 
  ```
+ ### Table of content
 
-| property | Type | Description |
+| Property | Type | Description |
 | --- | --- | --- |
-| isCompletedWithoutError | Boolean | information if the request done with any error |
+| isCompletedWithoutError | Boolean | The request done with error or not |
+| maxContentLength | Number | Request max content length |
+| method | String | Request method |
+| timeout | number | Request time out |
+| proxy | object | Request proxy |
+| requestData | Object | Object that hold the request data (data, query, params)|
+| requestHeaders | Object | Request headers |
+| responseData | Object | Response data |
+| startTime | Number (timestamp) | Request start time |
+| endTime | Number (timestamp) | Request end time |
+| totalTime | String | Request total time |
+| url | String | Request url |
 
 
 
