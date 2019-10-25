@@ -23,8 +23,8 @@ $ yarn add redel
 ## Redel API
 - [use](#use)
 - [add](#add)
-- [ejectAll](#ejectAll)
 - [eject](#eject)
+- [ejectAll](#ejectAll)
 - [getSignedMiddleware](#getSignedMiddleware)
 - [getPendingRequests](#getPendingRequests)
 - [clearPendingRequests](#clearPendingRequests)
@@ -398,7 +398,8 @@ Redel.clearPendingRequests()
 
 
  ## cancelGroupRequests
- [Click here to more information](#cancel-plugin)
+ Cancel all requests that belong to the groupKey.<br />
+ [Click here for more information](#cancel-plugin)
 
 ```js
 Redel.cancelGroupRequests('cancelGroupKey')
