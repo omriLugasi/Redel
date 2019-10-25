@@ -43,6 +43,10 @@ const axios = require('axios')
 const config = { log: true }
 Redel.use(axios, config)
 
+// ..
+
+axios.get('https://jsonplaceholder.typicode.com/todos')
+
 ```
 
 Performing usage with multiple plugins
@@ -54,6 +58,10 @@ const axios = require('axios')
 
 const config = { log: true, cancel: true, pending: true }
 Redel.use(axios, config)
+
+// ..
+
+axios.get('https://jsonplaceholder.typicode.com/todos')
 
 ```
 
@@ -67,6 +75,10 @@ const axiosInstance = axios.create()
 
 const config = { log: true, cancel: true, pending: true }
 Redel.use(axiosInstance, config)
+
+// ..
+
+axios.get('https://jsonplaceholder.typicode.com/todos')
 
 ```
 
