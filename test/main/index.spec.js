@@ -95,8 +95,8 @@ describe('Test the main module', () => {
     })
   })
 
-  context('validate that add work well', () => {
-    it('should return length of 1 signed plugins', () => {
+  context('validate that add plugin work well', () => {
+    it('should assign new plugin', () => {
       Redel.use(axios, {})
       Redel.add('log')
       assert.isTrue(Redel.getSignedMiddleware().length === 1)
@@ -110,7 +110,7 @@ describe('Test the main module', () => {
 
     it('should not sign plugin that already singed', () => {
       const pluginName = 'log'
-      Redel.use(axios, { log: true })
+      Redel.use(axios, { [pluginName]: true })
       Redel.add(pluginName)
       assert.isTrue(Redel.getSignedMiddleware().length === 1)
     })
