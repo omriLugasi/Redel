@@ -13,9 +13,9 @@ A middleware library for promise based axios for the browser and nodeJs
 
 ## Redel Top Level API
 - [use](#use)
-- getSignedMiddleware
-- ejectByKey
-- ejectAll
+- [ejectAll](#eject-all)
+- [ejectByKey](#eject-by-key)
+- [getSignedMiddleware](#get-signed-middleware)
 
 ## Installing
 
@@ -280,8 +280,39 @@ Example
 
  ```
 
+## ejectAll
+
+Reset the Redel plugins.
+<br />
+This is useful when you want to remove all your plugins at once.<br />
+> Note: The axios instance will be saved.
+
+Example
+ ```js
+ Redel.ejectAll()
+
+ ```
 
 
+## ejectByKey
+Remove plugin from Redel.
+<br />
+This is useful when you want to remove specific plugin at run time from the Redel instance.
+<br />
+<br />
+Example
+ ```js
+ const axios = require('axios')
+
+ Redel.use(axios, { log: true })
+
+ //...
+ //...
+ //...
+
+ Redel.ejectByKey('log')
+
+ ```
 
 
 
