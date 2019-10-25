@@ -12,7 +12,7 @@ A middleware library for promise based axios for the browser and nodeJs
 - [Pending](#pending-plugin)
 
 ## Redel Top Level API
-- use
+- [use](#use)
 - getSignedMiddleware
 - ejectByKey
 - ejectAll
@@ -258,7 +258,27 @@ Examples
 | url | String | Request url |
 
 
+## Use
 
+Work as Redel init function.<br />
+To initialize the function we need 2 params, axios and config.<br />
+
+| Property | Description |
+| --- | --- |
+| axios | axios instance |
+| config | Contains the desire plugins |
+
+<br />
+The function will sign the plugins into the injected axios instnace.
+<br />
+
+Example
+ ```js
+ const axios = require('axios')
+
+ Redel.use(axios, { log: true })
+
+ ```
 
 
 
