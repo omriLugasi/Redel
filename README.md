@@ -217,6 +217,8 @@ window.addEventListener("beforeunload", function (e) {
 
 Examples
  ```js
+ const Redel = require('redel')
+ const axios = require('axios')
 
  const url = 'https://jsonplaceholder.typicode.com/todos/1'
 
@@ -287,6 +289,7 @@ The function will sign the plugins into the injected axios instnace.
 
 Example
  ```js
+ const Redel = require('redel')
  const axios = require('axios')
 
  Redel.use(axios, { log: true })
@@ -299,6 +302,7 @@ Add plugin at run time <br />
 
 Example
  ```js
+ const Redel = require('redel')
  const axios = require('axios')
 
  Redel.use(axios, { log: true })
@@ -321,6 +325,7 @@ This is useful when you want to remove specific plugin at run time from the Rede
 <br />
 Example
  ```js
+ const Redel = require('redel')
  const axios = require('axios')
 
  Redel.use(axios, { log: true })
@@ -352,7 +357,7 @@ Example
  Exmaple
 
  ```js
-
+  const Redel = require('redel')
   const axios = require('axios')
 
   Redel.use(axios, { log: true, cancel: true })
