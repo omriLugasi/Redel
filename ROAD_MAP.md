@@ -1,5 +1,5 @@
 # ROADMAP
-- change implementation (to simpler)
+- improve readme top level
 - change all middleware words into plugin
 - try the plugins with multipart
 - be sure not to set Redel twice at the same app

@@ -18,7 +18,7 @@ describe('Cancel plugin', () => {
   })
 
   describe('cancel group requests', () => {
-    const ccgkParam = `?${Redel.cancel.ccgk}=${cancelGroupKey}`
+    const ccgkParam = `?${Redel.ccgk}=${cancelGroupKey}`
     const generateUrl = time => `${BASIC_URL}/time-out/${time}${ccgkParam}`
     const basicNum = 300
     let canceledRequestsTimes = 0
@@ -39,7 +39,7 @@ describe('Cancel plugin', () => {
       })
 
       it('should validate that requests with "cancelGroupKey" canceled', done => {
-        Redel.cancel.cancelGroupRequests(cancelGroupKey)
+        Redel.cancelGroupRequests(cancelGroupKey)
         setImmediate(() => {
           assert.isTrue(canceledRequestsTimes === 5)
           done()
@@ -56,7 +56,7 @@ describe('Cancel plugin', () => {
       })
 
       it('should validate that "cancelAllGroupRequests" cancel only the requests with the group key', done => {
-        Redel.cancel.cancelGroupRequests('another-custom-group-key')
+        Redel.cancelGroupRequests('another-custom-group-key')
         setImmediate(() => {
           assert.equal(canceledRequestsTimes, 0)
           done()

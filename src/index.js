@@ -146,17 +146,17 @@ Redel.prototype.eject = eject
 
 /**
  * @description
- * List of plugins that Redel Authorize to use
- * @param pending - A pending plugin, plugin that give you control on the pending requests
- * @param cancel - A cancel plugin - plugin that give to the cancelToken a super powers,
- * cancel irrelevant request like nobody watch
- * @param log - A log plugin - print log on each request, for example
- * time, requestData, responseData, proxies, and much more ...
+ * expose functions from pending plugin
  */
-Redel.prototype.pending = pending
-Redel.prototype.cancel = cancel
-Redel.prototype.log = log
+Redel.prototype.getPendingRequests = pending.getPendingRequests.bind(pending)
+Redel.prototype.clearPendingRequests = pending.clear.bind(pending)
 
+/**
+ * @description
+ * expose functions from cancel plugin
+ */
+Redel.prototype.cancelGroupRequests = cancel.cancelGroupRequests.bind(cancel)
+Redel.prototype.ccgk = cancel.ccgk
 
 /**
  * @description

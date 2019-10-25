@@ -77,7 +77,7 @@ describe('Test the main module', () => {
         axios.get(`${BASIC_URL}/basic`).catch(() => {})
 
         setImmediate(() => {
-          assert.isTrue(Redel.pending.getPendingRequests().length === 0)
+          assert.isTrue(Redel.getPendingRequests().length === 0)
         })
       })
 
