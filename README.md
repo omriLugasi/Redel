@@ -15,7 +15,7 @@ A middleware library for promise based axios for the browser and nodeJs
 - [use](#use)
 - [ejectAll](#ejectAll)
 - [ejectByKey](#ejectByKey)
-- [getSignedMiddleware](#get-signed-middleware)
+- [getSignedMiddleware](#getSignedMiddleware)
 
 ## Installing
 
@@ -314,5 +314,19 @@ Example
 
  ```
 
+ ## getSignedMiddleware
+ Return Array of singed plugins name.<br />
+
+ Exmaple
+
+ ```js
+
+  const axios = require('axios')
+
+  Redel.use(axios, { log: true, cancel: true })
+
+  console.log(Redel.getSignedMiddleware()) // ['log', 'cancel']
+
+ ```
 
 
