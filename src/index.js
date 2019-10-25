@@ -1,6 +1,6 @@
 const pending = require('./plugins/pending.plugin')
 const cancel = require('./plugins/cancel.plugin')
-const statistics = require('./plugins/statistics.plugin')
+const log = require('./plugins/log.plugin')
 const logger = require('./services/logger')
 
 /**
@@ -11,7 +11,7 @@ const logger = require('./services/logger')
 const AuthorizedPlugins = {
   pending,
   cancel,
-  statistics,
+  log,
 }
 
 function Redel() {
@@ -124,12 +124,12 @@ Redel.prototype.ejectByKey = ejectByKey
  * @param pending - A pending plugin, plugin that give you control on the pending requests
  * @param cancel - A cancel plugin - plugin that give to the cancelToken a super powers,
  * cancel irrelevant request like nobody watch
- * @param statistics - A statistics plugin - print statistics on each request, for example
+ * @param log - A log plugin - print log on each request, for example
  * time, requestData, responseData, proxies, and much more ...
  */
 Redel.prototype.pending = pending
 Redel.prototype.cancel = cancel
-Redel.prototype.statistics = statistics
+Redel.prototype.log = log
 
 
 module.exports = new Redel()

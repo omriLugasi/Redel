@@ -6,7 +6,7 @@ const server = require('../../server/index')
 const { BASIC_URL } = require('../utils/index')
 
 
-describe('Test the main module with combination of statistics and cancel', () => {
+describe('Test the main module with combination of log and cancel', () => {
   let consoleLogSpy
   // eslint-disable-next-line no-console
   const storeLog = console.log
@@ -19,7 +19,7 @@ describe('Test the main module with combination of statistics and cancel', () =>
     consoleLogSpy = spy(console, 'log')
 
     Redel.ejectAll()
-    Redel.use(axios, { statistics: true, cancel: true, pending: true })
+    Redel.use(axios, { log: true, cancel: true, pending: true })
     server.init()
   })
 
@@ -53,7 +53,7 @@ describe('Test the main module with combination of statistics and cancel', () =>
     })
   })
 
-  context('is statistics plugin work well with combination', () => {
+  context('is log plugin work well with combination', () => {
     before(async () => {
       await axios.get(basicUrl).catch(() => {})
       await axios.get(basicUrl).catch(() => {})

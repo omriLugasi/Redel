@@ -8,7 +8,7 @@ A middleware library for promise based axios for the browser and nodeJs
 
 ## Plugins
 - Cancel
-- Statistics
+- Log
 - Pending
 
 ## Redel Top Level API
@@ -40,7 +40,7 @@ Performing a basic usage
 const Redel = require('redel')
 const axios = require('axios')
 
-const config = { statistics: true }
+const config = { log: true }
 Redel.use(axios, config)
 
 ```
@@ -52,7 +52,7 @@ Performing usage with multiple plugins
 const Redel = require('redel')
 const axios = require('axios')
 
-const config = { statistics: true, cancel: true, pending: true }
+const config = { log: true, cancel: true, pending: true }
 Redel.use(axios, config)
 
 ```
@@ -65,7 +65,7 @@ const Redel = require('redel')
 const axios = require('axios')
 const axiosInstance = axios.create()
 
-const config = { statistics: true, cancel: true, pending: true }
+const config = { log: true, cancel: true, pending: true }
 Redel.use(axiosInstance, config)
 
 ```
@@ -198,7 +198,7 @@ window.addEventListener("beforeunload", function (e) {
  ```
 
 
-## Statistics
+## Log
 
  Monitoring your requests by printing a very informative log about each request.<br />
 
@@ -207,7 +207,7 @@ Examples
 
  const url = 'https://jsonplaceholder.typicode.com/todos/1'
 
- Redel.use(axios, { statistics: true })
+ Redel.use(axios, { log: true })
 
  axios.get(url)
 

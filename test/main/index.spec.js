@@ -13,12 +13,12 @@ describe('Test the main module', () => {
     const errorMessage = 'Redel must init with an axios instance!'
 
     it('should throw exception if not sending axios instance', () => {
-      assert.throws(() => Redel.use({}, { statistics: true }), errorMessage)
+      assert.throws(() => Redel.use({}, { log: true }), errorMessage)
     })
 
     it('should work with axios.create functionality', () => {
       const axiosInstance = axios.create()
-      assert.doesNotThrow(() => Redel.use(axiosInstance, { statistics: true }), errorMessage)
+      assert.doesNotThrow(() => Redel.use(axiosInstance, { log: true }), errorMessage)
     })
   })
 
@@ -61,7 +61,7 @@ describe('Test the main module', () => {
   context('validate that eject work well', () => {
     context('eject all', () => {
       it('should return 0 length of signed plugins', () => {
-        Redel.use(axios, { statistics: true, cancel: true })
+        Redel.use(axios, { log: true, cancel: true })
         Redel.ejectAll()
         assert.isTrue(Redel.getSignedMiddleware().length === 0)
       })
@@ -88,7 +88,7 @@ describe('Test the main module', () => {
       })
 
       it('should not eject plugin that exist but not sign', () => {
-        Redel.use(axios, { pending: true, statistics: true })
+        Redel.use(axios, { pending: true, log: true })
         Redel.ejectByKey('cancel')
         assert.isTrue(Redel.getSignedMiddleware().length === 2)
       })
