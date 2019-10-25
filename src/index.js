@@ -2,6 +2,7 @@ const pending = require('./plugins/pending.plugin')
 const cancel = require('./plugins/cancel.plugin')
 const log = require('./plugins/log.plugin')
 const logger = require('./services/logger')
+const { GITHUB_REPO } = require('./config')
 
 /**
  * The Only Authorized plugins for this version.
@@ -148,7 +149,10 @@ Redel.prototype.eject = eject
  * @description
  * expose functions from pending plugin
  */
-Redel.prototype.getPendingRequests = pending.getPendingRequests.bind(pending)
+Redel.prototype.getPendingRequests = () => {
+  const isPluginSignIn = _isPluginSignIn(pending, 'getPendingRequests')
+  return isPluginSignIn ? pending.getPendingRequests() : undefined
+}
 Redel.prototype.clearPendingRequests = pending.clear.bind(pending)
 
 /**
@@ -170,5 +174,19 @@ function _addPlugin(key) {
   this.signedPlugins.push(key)
 }
 
+
+function _isPluginSignIn(plugin, fnName) {
+  if (!plugin.isPluginTurnOn) {
+    const { constructor } = plugin
+    console.error(
+      `${constructor.name} plugin not initialized while you trying to call "${fnName}"`,
+      `try to pass the "${constructor.name.toLowerCase()}" property into the Redel config to init the plugin`,
+      'for more information please visit our docs at',
+      GITHUB_REPO,
+    )
+    return false
+  }
+  return true
+}
 
 module.exports = new Redel()

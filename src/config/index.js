@@ -14,6 +14,7 @@ const isStringEqualToTrue = isEnvVariableTrue => isEnvVariableTrue === 'true'
  */
 const general = Object.freeze({
   ALLOW_LOG: isStringEqualToTrue(env.ALLOW_LOG || 'false'),
+  GITHUB_REPO: 'https://github.com/omriLugasi/Redel',
 })
 
 module.exports = {

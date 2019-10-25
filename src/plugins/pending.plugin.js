@@ -16,6 +16,7 @@ class Pending {
     // hold the requests status to know if there are any pending requests
     this.pendingRequestsObject = {}
     this.interceptorsRef = {}
+    this.isPluginTurnOn = false
   }
 
   _obtainKey(config) {
@@ -73,15 +74,11 @@ class Pending {
     delete this.pendingRequestsObject[key]
   }
 
-  /*  EXPOSE   */
-
-  /**
-   * @description
-   * Reset the pendingRequestsObject
-   */
-  clear() {
-    this.pendingRequestsObject = {}
+  _switchPluginStatus(status) {
+    this.isPluginTurnOn = status
   }
+
+  /*  EXPOSE   */
 
   /**
    * @description
@@ -98,6 +95,7 @@ class Pending {
       this._onResponseSuccess.bind(this),
       this._onResponseFailed.bind(this),
     )
+    this._switchPluginStatus(true)
   }
 
   /**
@@ -108,6 +106,16 @@ class Pending {
   eject(axios) {
     axios.interceptors.request.eject(this.interceptorsRef.request)
     axios.interceptors.response.eject(this.interceptorsRef.response)
+    this._switchPluginStatus(false)
+  }
+
+
+  /**
+   * @description
+   * Reset the pendingRequestsObject
+   */
+  clear() {
+    this.pendingRequestsObject = {}
   }
 
   /**

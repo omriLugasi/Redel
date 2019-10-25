@@ -77,7 +77,7 @@ describe('Test the main module', () => {
         axios.get(`${BASIC_URL}/basic`).catch(() => {})
 
         setImmediate(() => {
-          assert.isTrue(Redel.getPendingRequests().length === 0)
+          assert.isTrue(Redel.getPendingRequests() === undefined)
         })
       })
 
@@ -121,5 +121,14 @@ describe('Test the main module', () => {
       Redel.add(pluginName)
       assert.isTrue(Redel.getSignedMiddleware().length === 2)
     })
+  })
+
+  context('validate api functionality when user didn\'t init the relevant plugin', () => {
+
+    it('should provide informative error about trying to use functionality of pending plugin that didn\'t init', () => {
+      Redel.use(axios, {})
+      assert.isTrue(Redel.getPendingRequests() === undefined)
+    })
+
   })
 })
