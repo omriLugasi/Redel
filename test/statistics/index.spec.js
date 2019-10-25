@@ -6,7 +6,7 @@ const server = require('./../../server')
 const Redel = require('./../../src')
 
 
-describe('Statistics plugin', () => {
+describe('Log plugin', () => {
   let consoleLogSpy
   // eslint-disable-next-line no-console
   const storeLog = console.log
@@ -14,7 +14,7 @@ describe('Statistics plugin', () => {
   before(() => {
     server.init()
     Redel.ejectAll()
-    Redel.use(axios, { statistics: true })
+    Redel.use(axios, { log: true })
 
     // change the console.log function to anonymous function to work on the test in easier format
     // eslint-disable-next-line no-console
@@ -31,9 +31,9 @@ describe('Statistics plugin', () => {
   })
 
 
-  context('is statistics sign to the main module', () => {
-    it('should find statistics in the main module', () => {
-      assert.isTrue(Redel.getSignedMiddleware()[0] === 'statistics')
+  context('is log sign to the main module', () => {
+    it('should find log in the main module', () => {
+      assert.isTrue(Redel.getSignedMiddleware()[0] === 'log')
       assert.isTrue(Redel.getSignedMiddleware().length === 1)
     })
   })
@@ -80,7 +80,7 @@ describe('Statistics plugin', () => {
     })
   })
 
-  context('is statistics object has default properties', () => {
+  context('is log object has default properties', () => {
     const url = `${BASIC_URL}/basic`
 
     it('should validate that proxy is undefined by default', async () => {
@@ -175,7 +175,7 @@ describe('Statistics plugin', () => {
     })
   })
 
-  context('is statistics object contains the right parameters for request', () => {
+  context('is log object contains the right parameters for request', () => {
     let printedData
     const url = `${BASIC_URL}/basic`
     const query = { queryParam1: '1', queryParam2: '2' }

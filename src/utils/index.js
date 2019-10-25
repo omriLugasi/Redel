@@ -2,10 +2,10 @@ const uuid4 = require('uuid/v4')
 
 /**
  * @description
- * Statistics Unique request key
+ * Log Unique request key
  * @type {string}
  */
-const statisticsUniqueRequestKey = '__Redel_statistics_request_key__'
+const logUniqueRequestKey = '__Redel_log_request_key__'
 
 /**
  * @description
@@ -25,7 +25,7 @@ const ensureGetConfig = error => error.config || error.message
 
 module.exports = {
   pendingUniqueRequestKey,
-  statisticsUniqueRequestKey,
+  logUniqueRequestKey,
   generateUniqueRequestKey: uuid4,
   ensureGetConfig,
 }

@@ -1,26 +1,26 @@
 const url = require('url')
 const qs = require('qs')
-const { generateUniqueRequestKey, statisticsUniqueRequestKey, ensureGetConfig } = require('./../utils')
+const { generateUniqueRequestKey, logUniqueRequestKey, ensureGetConfig } = require('./../utils')
 /**
  * @description
- * Statistics plugin is a plugin that help you monitoring your requests
+ * Log plugin is a plugin that help you monitoring your requests
  * by printing a very informative log about each request
  */
-class Statistics {
+class Log {
   constructor() {
-    this.statisticsRequestsMap = {}
+    this.logRequestsMap = {}
     this.interceptorsRef = {}
   }
 
   _obtainKey(config) {
-    if (!config[statisticsUniqueRequestKey]) {
-      Object.assign(config, { [statisticsUniqueRequestKey]: generateUniqueRequestKey() })
+    if (!config[logUniqueRequestKey]) {
+      Object.assign(config, { [logUniqueRequestKey]: generateUniqueRequestKey() })
     }
-    return config[statisticsUniqueRequestKey]
+    return config[logUniqueRequestKey]
   }
 
   _isRequestsMapContain(key) {
-    return typeof this.statisticsRequestsMap[key] !== 'undefined'
+    return typeof this.logRequestsMap[key] !== 'undefined'
   }
 
   _onRequestSuccess(config) {
@@ -40,7 +40,7 @@ class Statistics {
     const config = ensureGetConfig(error)
     const key = this._obtainKey(config)
     // Those rows related to the cancel plugin, the issue is that
-    // we cancel request before it sign to the statistics plugin
+    // we cancel request before it sign to the log plugin
     // and because of that we cant find any reference to the desire object
     const isRequestNotSignBeforeCanceled = config.isCanceled && !this._isRequestsMapContain(key)
     if (isRequestNotSignBeforeCanceled) {
@@ -60,7 +60,7 @@ class Statistics {
    */
   _create(config) {
     const key = this._obtainKey(config)
-    this.statisticsRequestsMap[key] = {
+    this.logRequestsMap[key] = {
       url: config.url,
       method: config.method,
       startTime: Date.now(),
@@ -77,7 +77,7 @@ class Statistics {
   }
 
   _delete(key) {
-    delete this.statisticsRequestsMap[key]
+    delete this.logRequestsMap[key]
   }
 
   /**
@@ -90,14 +90,14 @@ class Statistics {
   _update({ config, data, status }) {
     const key = this._obtainKey(config)
     const currentTime = Date.now()
-    const basicObject = this.statisticsRequestsMap[key]
+    const basicObject = this.logRequestsMap[key]
     const updateLogQuery = {
       endTime: currentTime,
       totalTime: `${currentTime - basicObject.startTime}ms`,
       responseData: data,
       isCompletedWithoutError: config.validateStatus(status),
     }
-    this.statisticsRequestsMap[key] = {
+    this.logRequestsMap[key] = {
       ...basicObject,
       ...updateLogQuery,
     }
@@ -114,7 +114,7 @@ class Statistics {
   _printByKey(key, urlPath) {
     /* eslint-disable no-console */
     console.group(urlPath)
-    console.log(this.statisticsRequestsMap[key])
+    console.log(this.logRequestsMap[key])
     console.groupEnd()
     /* eslint-disable no-console */
   }
@@ -169,4 +169,4 @@ class Statistics {
 }
 
 
-module.exports = new Statistics()
+module.exports = new Log()
