@@ -149,7 +149,7 @@ Redel.prototype.eject = eject
  * expose functions from pending plugin
  */
 Redel.prototype.getPendingRequests = pending.getPendingRequests.bind(pending)
-Redel.prototype.clearPendingRequest = pending.clear.bind(pending)
+Redel.prototype.clearPendingRequests = pending.clear.bind(pending)
 
 /**
  * @description

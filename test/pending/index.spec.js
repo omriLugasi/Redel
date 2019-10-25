@@ -17,7 +17,7 @@ describe('Pending plugin', () => {
   })
 
   beforeEach(() => {
-    Redel.clearPendingRequest()
+    Redel.clearPendingRequests()
   })
 
 
