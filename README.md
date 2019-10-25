@@ -146,7 +146,7 @@ const cancelGroupKey = 'customCancelGroupKey'
 
 // the group key currently will be a query param the implementation like below will be
 // "protocol://url:port?ccgk=customGroupKey"
-const ccgkParam = `${Redel.cancel.ccgk}=${cancelGroupKey}`
+const ccgkParam = `${Redel.ccgk}=${cancelGroupKey}`
 const basicUrl = 'https://jsonplaceholder.typicode.com/todos'
 
 let canceledReqeuests = 0
@@ -170,7 +170,7 @@ mount()
 
 // beforeDestroyed run the commend below to ensure that
 // all pending requests would be canceled
-Redel.cancel.cancelGroupRequests(cancelGroupKey)
+Redel.cancelGroupRequests(cancelGroupKey)
 
 
 ```
@@ -192,7 +192,7 @@ Redel.use(axios, { pending: true })
 
 axios.get(`${basicUrl}/1`)
 setTimeout(() => {
-  console.log(Redel.pending.getPendingRequests()) // ["/todos/1"]
+  console.log(Redel.getPendingRequests()) // ["/todos/1"]
 })
 
  ```
@@ -202,7 +202,7 @@ A common usage of this functionality can be found in "beforeunload"
  ```js
 // if user has any pending request, display warning message
 window.addEventListener("beforeunload", function (e) {
-  if (Redel.pending.getPendingRequests().length) {
+  if (Redel.getPendingRequests().length) {
     // there are pending requests
     // display a warning message
   }

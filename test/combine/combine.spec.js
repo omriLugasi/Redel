@@ -72,13 +72,13 @@ describe('Test the main module with combination of log and cancel', () => {
         axios.get(`${BASIC_URL}/time-out/12`).catch(() => {}),
         axios.get(`${BASIC_URL}/time-out/12`).catch(() => {}),
       ]).then(() => {
-        assert.isTrue(Redel.pending.getPendingRequests().length === 0)
+        assert.isTrue(Redel.getPendingRequests().length === 0)
         done()
       })
       setImmediate(() => {
         // the pending request is 1 because the cancel
         // plugin already remove two of those promises
-        assert.isTrue(Redel.pending.getPendingRequests().length === 1)
+        assert.isTrue(Redel.getPendingRequests().length === 1)
       })
     })
 
@@ -93,11 +93,11 @@ describe('Test the main module with combination of log and cancel', () => {
       ]
       Promise.all(promises)
         .then(() => {
-          assert.isTrue(Redel.pending.getPendingRequests().length === 0)
+          assert.isTrue(Redel.getPendingRequests().length === 0)
           done()
         })
       setImmediate(() => {
-        assert.isTrue(Redel.pending.getPendingRequests().length === promises.length)
+        assert.isTrue(Redel.getPendingRequests().length === promises.length)
       })
     })
   })

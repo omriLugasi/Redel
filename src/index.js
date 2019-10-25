@@ -153,10 +153,14 @@ Redel.prototype.eject = eject
  * @param log - A log plugin - print log on each request, for example
  * time, requestData, responseData, proxies, and much more ...
  */
-Redel.prototype.pending = pending
-Redel.prototype.cancel = cancel
-Redel.prototype.log = log
 
+// pending
+Redel.prototype.getPendingRequests = pending.getPendingRequests.bind(pending)
+Redel.prototype.clearPendingRequest = pending.clear.bind(pending)
+
+// cancel module
+Redel.prototype.cancelGroupRequests = cancel.cancelGroupRequests.bind(cancel)
+Redel.prototype.ccgk = cancel.ccgk
 
 /**
  * @description
