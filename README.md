@@ -6,18 +6,6 @@
 
 A middleware library for promise based axios for the browser and nodeJs
 
-## Plugins
-- [Cancel](#cancel-plugin)
-- [Log](#log-plugin)
-- [Pending](#pending-plugin)
-
-## Redel Top Level API
-- [use](#use)
-- [add](#add)
-- [ejectAll](#ejectAll)
-- [ejectByKey](#ejectByKey)
-- [getSignedMiddleware](#getSignedMiddleware)
-
 ## Installing
 
 Using npm:
@@ -31,6 +19,24 @@ Using yarn:
 ```bash
 $ yarn add redel
 ```
+
+## Redel API
+- [use](#use)
+- [add](#add)
+- [eject](#eject)
+- [ejectAll](#ejectAll)
+- [getSignedMiddleware](#getSignedMiddleware)
+- [getPendingRequests](#getPendingRequests)
+- [clearPendingRequests](#clearPendingRequests)
+- [cancelGroupRequests](#cancelGroupRequests)
+- [ccgk](#ccgk)
+
+## Plugins
+- [Cancel](#cancel-plugin)
+- [Log](#log-plugin)
+- [Pending](#pending-plugin)
+
+
 
 ## Example
 
@@ -182,20 +188,18 @@ Redel.cancelGroupRequests(cancelGroupKey)
 
 Examples
 
- ```js
+```js
 const Redel = require('redel')
 const axios = require('axios')
 
-const basicUrl = 'https://jsonplaceholder.typicode.com/todos'
-
 Redel.use(axios, { pending: true })
 
-axios.get(`${basicUrl}/1`)
+axios.get('https://jsonplaceholder.typicode.com/todos/1')
 setTimeout(() => {
-  console.log(Redel.getPendingRequests()) // ["/todos/1"]
+    console.log(Redel.getPendingRequests()) // ["/todos/1"]
 })
 
- ```
+```
 
 A common usage of this functionality can be found in "beforeunload"
 
@@ -217,14 +221,14 @@ window.addEventListener("beforeunload", function (e) {
 
 Examples
  ```js
- const Redel = require('redel')
- const axios = require('axios')
+const Redel = require('redel')
+const axios = require('axios')
 
- const url = 'https://jsonplaceholder.typicode.com/todos/1'
+const url = 'https://jsonplaceholder.typicode.com/todos/1'
 
- Redel.use(axios, { log: true })
+Redel.use(axios, { log: true })
 
- axios.get(url)
+axios.get(url)
 
  ```
 
@@ -289,10 +293,10 @@ The function will sign the plugins into the injected axios instnace.
 
 Example
  ```js
- const Redel = require('redel')
- const axios = require('axios')
+const Redel = require('redel')
+const axios = require('axios')
 
- Redel.use(axios, { log: true })
+Redel.use(axios, { log: true })
 
  ```
 
@@ -302,22 +306,22 @@ Add plugin at run time <br />
 
 Example
  ```js
- const Redel = require('redel')
- const axios = require('axios')
+const Redel = require('redel')
+const axios = require('axios')
 
- Redel.use(axios, { log: true })
+Redel.use(axios, { log: true })
 
- // ...
- // ...
- // ...
+// ...
+// ...
+// ...
 
- Redel.add('cancel')
+Redel.add('cancel')
 
- console.log(Redel.getSignedMiddleware()) // ['log', 'cancel']
+console.log(Redel.getSignedMiddleware()) // ['log', 'cancel']
 
  ```
 
-## ejectByKey
+## eject
 Remove plugin from Redel.
 <br />
 This is useful when you want to remove specific plugin at run time from the Redel instance.
@@ -325,16 +329,16 @@ This is useful when you want to remove specific plugin at run time from the Rede
 <br />
 Example
  ```js
- const Redel = require('redel')
- const axios = require('axios')
+const Redel = require('redel')
+const axios = require('axios')
 
- Redel.use(axios, { log: true })
+Redel.use(axios, { log: true })
 
- //...
- //...
- //...
+//...
+//...
+//...
 
- Redel.ejectByKey('log')
+Redel.eject('log')
 
  ```
 
@@ -345,9 +349,8 @@ Example
  This is useful when you want to remove all your plugins at once.<br />
  > Note: The axios instance will be saved.
 
- Example
   ```js
-  Redel.ejectAll()
+Redel.ejectAll()
 
   ```
 
@@ -357,13 +360,52 @@ Example
  Exmaple
 
  ```js
-  const Redel = require('redel')
-  const axios = require('axios')
+const Redel = require('redel')
+const axios = require('axios')
 
-  Redel.use(axios, { log: true, cancel: true })
+Redel.use(axios, { log: true, cancel: true })
 
-  console.log(Redel.getSignedMiddleware()) // ['log', 'cancel']
+console.log(Redel.getSignedMiddleware()) // ['log', 'cancel']
 
  ```
 
+ ## getPendingRequests
 
+ Return Array of string, that each string contain the url of pending request.
+
+Example
+
+```js
+const Redel = require('redel')
+const axios = require('axios')
+
+Redel.use(axios, { pending: true })
+
+axios.get('https://jsonplaceholder.typicode.com/todos/1')
+setTimeout(() => {
+    console.log(Redel.getPendingRequests()) // ["/todos/1"]
+})
+
+```
+
+ ## clearPendingRequests
+
+ Clear the pending request array.
+
+```js
+Redel.clearPendingRequests()
+```
+
+
+ ## cancelGroupRequests
+ Cancel all requests that belong to the groupKey.<br />
+ [Click here for more information](#cancel-plugin)
+
+```js
+Redel.cancelGroupRequests('cancelGroupKey')
+```
+
+ ## ccgk
+ **C**ancel **C**ustom **G**roup **K**ey
+
+ You can find an example for ccgk [here](#cancel-plugin)
