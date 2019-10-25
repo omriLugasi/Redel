@@ -13,8 +13,8 @@ A middleware library for promise based axios for the browser and nodeJs
 
 ## Redel Top Level API
 - [use](#use)
-- [ejectAll](#eject-all)
-- [ejectByKey](#eject-by-key)
+- [ejectAll](#ejectAll)
+- [ejectByKey](#ejectByKey)
 - [getSignedMiddleware](#get-signed-middleware)
 
 ## Installing
