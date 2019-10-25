@@ -1,7 +1,10 @@
 # ROADMAP
+- Informative README
+- try the statistics with multipart
 - Create your on invirte module
 - CI
-- Informative README
+- https://coveralls.io/
+- Cdn implementation
 
 
 
