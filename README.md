@@ -7,7 +7,7 @@
 A middleware library for promise based axios for the browser and nodeJs
 
 ## Plugins
-- [Cancel](#cancelPlugin)
+- [Cancel](#cancel-plugin)
 - Log
 - Pending
 
