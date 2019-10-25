@@ -72,7 +72,7 @@ function getSignedMiddleware() {
 
 /**
  * @description
- * Let the use the option to delete all the Redel plugins
+ * Let the user the option to delete all the Redel plugins
  * from the axios instance (reset the Redel plugins)
  */
 function ejectAll() {

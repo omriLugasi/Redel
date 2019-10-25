@@ -32,7 +32,7 @@
     "cancel",
     "cancelToken",
     "pending",
-    "statistics",
+    "log",
     "XHR logs"
   ],
   "author": "Omri Luggasi",
