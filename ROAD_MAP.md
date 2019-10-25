@@ -1,12 +1,12 @@
 # ROADMAP
-- Informative README
-- add plugin top level api
 - change implementation (to simpler)
 - change all middleware words into plugin
 - try the plugins with multipart
+- be sure not to set Redel twice at the same app
 - Create your on invirte module
 - CI
 - https://coveralls.io/
+- Informative README stage 2 (english improvement)
 - Cdn implementation
 
 
