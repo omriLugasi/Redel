@@ -149,8 +149,8 @@ Redel.prototype.eject = eject
  * @description
  * expose functions from pending plugin
  */
-Redel.prototype.getPendingRequests = () => {
-  const isPluginSignIn = _isPluginSignIn(pending, 'getPendingRequests')
+Redel.prototype.getPendingRequests = function() {
+  const isPluginSignIn = _isPluginSignIn.call(this, pending, 'getPendingRequests')
   return isPluginSignIn ? pending.getPendingRequests() : undefined
 }
 Redel.prototype.clearPendingRequests = pending.clear.bind(pending)
@@ -176,11 +176,12 @@ function _addPlugin(key) {
 
 
 function _isPluginSignIn(plugin, fnName) {
-  if (!plugin.isPluginTurnOn) {
-    const { constructor } = plugin
+  const { constructor } = plugin
+  const pluginPropertyName = constructor.name.toLowerCase()
+  if (!this.signedPlugins.includes(pluginPropertyName)) {
     console.error(
       `${constructor.name} plugin not initialized while you trying to call "${fnName}"`,
-      `try to pass the "${constructor.name.toLowerCase()}" property into the Redel config to init the plugin`,
+      `try to pass the "${pluginPropertyName}" property into the Redel config to init the plugin`,
       'for more information please visit our docs at',
       GITHUB_REPO,
     )
