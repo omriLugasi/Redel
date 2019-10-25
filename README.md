@@ -8,8 +8,8 @@ A middleware library for promise based axios for the browser and nodeJs
 
 ## Plugins
 - [Cancel](#cancel-plugin)
-- Log
-- Pending
+- [Log](#log-plugin)
+- [Pending](#pending-plugin)
 
 ## Redel Top Level API
 - use
