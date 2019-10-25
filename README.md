@@ -7,7 +7,7 @@
 A middleware library for promise based axios for the browser and nodeJs
 
 ## Plugins
-- Cancel
+- [Cancel](#cancelPlugin)
 - Log
 - Pending
 
@@ -198,7 +198,7 @@ window.addEventListener("beforeunload", function (e) {
  ```
 
 
-## Log
+## Log Plugin
 
  Monitoring your requests by printing a very informative log about each request.<br />
 

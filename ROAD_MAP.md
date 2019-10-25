@@ -1,6 +1,7 @@
 # ROADMAP
 - Informative README
-- try the statistics with multipart
+- change implementation (to simpler)
+- try the plugins with multipart
 - Create your on invirte module
 - CI
 - https://coveralls.io/
