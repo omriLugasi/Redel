@@ -121,6 +121,5 @@ describe('Test the main module', () => {
       Redel.add(pluginName)
       assert.isTrue(Redel.getSignedMiddleware().length === 2)
     })
-
   })
 })
