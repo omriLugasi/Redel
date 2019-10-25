@@ -51,8 +51,7 @@ function use(axios, config) {
     Object.keys(config).forEach((key) => {
       if (AuthorizedPlugins[key]) {
         logger.log(` ${key} Middleware was sign`)
-        AuthorizedPlugins[key].applyMiddleware(axios)
-        this.signedPlugins.push(key)
+        _addPlugin.call(this, key)
       }
     })
   } else {
@@ -62,7 +61,7 @@ function use(axios, config) {
 
 /**
  * @description
- * Will return Array of singed plugins name
+ * Return Array of singed plugins name
  * @returns ["plugin-name"]
  */
 function getSignedMiddleware() {
@@ -88,7 +87,7 @@ function ejectAll() {
  * eject plugin by key, current keys displayed on the "AuthorizedPlugins" object
  * @param key
  */
-function ejectByKey(key) {
+function eject(key) {
   if (!AuthorizedPlugins[key]) {
     // eslint-disable-next-line no-console
     console.error(`You are trying to eject plugin that not exist [${key}],
@@ -105,17 +104,44 @@ function ejectByKey(key) {
   this.signedPlugins = this.signedPlugins.filter(pluginName => pluginName !== key)
 }
 
+/**
+ * @description
+ * add plugin at run time,
+ * before assignment the function check if the plugin authorized by the library,
+ * and if the plugin not already signed before, if both of the conditions true
+ * Redel will singed the plugin.
+ * @param key
+ */
+function add(key) {
+  if (!AuthorizedPlugins[key]) {
+    // eslint-disable-next-line no-console
+    console.error(`You are trying to add plugin that not exist [${key}],
+     currently available plugins are [${Object.keys(AuthorizedPlugins).toString()}]`)
+    return
+  }
+  if (this.signedPlugins.includes(key)) {
+    // eslint-disable-next-line no-console
+    console.error(`You are trying to add plugin that already signed to the 
+    Redel instance [${key}], currently singed plugins are [${this.signedPlugins.toString()}]`)
+    return
+  }
+  _addPlugin.call(this, key)
+}
 
 /**
  * @description
  * List of functions that can be invoke from the main Redel Object
  * @param use - for init the library
+ * @param add - add plugin
+ * @param ejectAll - eject all plugins
+ * @param eject - eject plugin
  * @param getSignedMiddleware - to get the singed plugins as strings array
  */
 Redel.prototype.use = use
+Redel.prototype.add = add
 Redel.prototype.getSignedMiddleware = getSignedMiddleware
 Redel.prototype.ejectAll = ejectAll
-Redel.prototype.ejectByKey = ejectByKey
+Redel.prototype.eject = eject
 
 
 /**
@@ -130,6 +156,19 @@ Redel.prototype.ejectByKey = ejectByKey
 Redel.prototype.pending = pending
 Redel.prototype.cancel = cancel
 Redel.prototype.log = log
+
+
+/**
+ * @description
+ * add plugin into the singedPlugins array and init the plugins with the axios instance
+ * @param key
+ * @private HELPER
+ */
+
+function _addPlugin(key) {
+  AuthorizedPlugins[key].applyMiddleware(this._axios)
+  this.signedPlugins.push(key)
+}
 
 
 module.exports = new Redel()

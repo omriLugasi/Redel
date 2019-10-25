@@ -13,6 +13,7 @@ A middleware library for promise based axios for the browser and nodeJs
 
 ## Redel Top Level API
 - [use](#use)
+- [add](#add)
 - [ejectAll](#ejectAll)
 - [ejectByKey](#ejectByKey)
 - [getSignedMiddleware](#getSignedMiddleware)
@@ -216,6 +217,8 @@ window.addEventListener("beforeunload", function (e) {
 
 Examples
  ```js
+ const Redel = require('redel')
+ const axios = require('axios')
 
  const url = 'https://jsonplaceholder.typicode.com/todos/1'
 
@@ -286,25 +289,33 @@ The function will sign the plugins into the injected axios instnace.
 
 Example
  ```js
+ const Redel = require('redel')
  const axios = require('axios')
 
  Redel.use(axios, { log: true })
 
  ```
 
-## ejectAll
+## add
 
-Reset the Redel plugins.
-<br />
-This is useful when you want to remove all your plugins at once.<br />
-> Note: The axios instance will be saved.
+Add plugin at run time <br />
 
 Example
  ```js
- Redel.ejectAll()
+ const Redel = require('redel')
+ const axios = require('axios')
+
+ Redel.use(axios, { log: true })
+
+ // ...
+ // ...
+ // ...
+
+ Redel.add('cancel')
+
+ console.log(Redel.getSignedMiddleware()) // ['log', 'cancel']
 
  ```
-
 
 ## ejectByKey
 Remove plugin from Redel.
@@ -314,6 +325,7 @@ This is useful when you want to remove specific plugin at run time from the Rede
 <br />
 Example
  ```js
+ const Redel = require('redel')
  const axios = require('axios')
 
  Redel.use(axios, { log: true })
@@ -326,13 +338,26 @@ Example
 
  ```
 
+ ## ejectAll
+
+ Reset the Redel plugins.
+ <br />
+ This is useful when you want to remove all your plugins at once.<br />
+ > Note: The axios instance will be saved.
+
+ Example
+  ```js
+  Redel.ejectAll()
+
+  ```
+
  ## getSignedMiddleware
  Return Array of singed plugins name.<br />
 
  Exmaple
 
  ```js
-
+  const Redel = require('redel')
   const axios = require('axios')
 
   Redel.use(axios, { log: true, cancel: true })
