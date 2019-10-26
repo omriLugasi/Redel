@@ -11,7 +11,7 @@ node_js:
   - 10
 
 script:
-  - npm run eslint:src
-  - npm run eslint:test
-  - npm run test
-  - covarge:all
+  - yarn run eslint:src
+  - yarn run eslint:test
+  - yarn run test
+  - yarn run covarge:all
