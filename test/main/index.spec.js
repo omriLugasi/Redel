@@ -77,7 +77,7 @@ describe('Test the main module', () => {
         axios.get(`${BASIC_URL}/basic`).catch(() => {})
 
         setImmediate(() => {
-          assert.isTrue(Redel.getPendingRequests() === undefined)
+          assert.throws(() => Redel.getPendingRequests())
         })
       })
 
@@ -124,11 +124,11 @@ describe('Test the main module', () => {
   })
 
   context('validate api functionality when user didn\'t init the relevant plugin', () => {
-
     it('should provide informative error about trying to use functionality of pending plugin that didn\'t init', () => {
       Redel.use(axios, {})
-      assert.isTrue(Redel.getPendingRequests() === undefined)
+      assert.throws(() => Redel.getPendingRequests(), 'pending plugin not initialized while you trying to call "getPendingRequests",\n'
+        + '      try to pass the "pending" property into the Redel config to init the plugin,\n'
+        + '      for more information please visit our docs at https://github.com/omriLugasi/Redel')
     })
-
   })
 })

@@ -9,10 +9,17 @@ const { GITHUB_REPO } = require('./config')
  * In the future we want to let developers to create middlewares
  * and use our API to create custom plugins
  */
+
+const PluginsNamesEnum = Object.freeze({
+  PENDING: 'pending',
+  CANCEL: 'cancel',
+  LOG: 'log',
+})
+
 const AuthorizedPlugins = {
-  pending,
-  cancel,
-  log,
+  [PluginsNamesEnum.PENDING]: pending,
+  [PluginsNamesEnum.CANCEL]: cancel,
+  [PluginsNamesEnum.LOG]: log,
 }
 
 function Redel() {
@@ -149,17 +156,23 @@ Redel.prototype.eject = eject
  * @description
  * expose functions from pending plugin
  */
-Redel.prototype.getPendingRequests = function() {
-  const isPluginSignIn = _isPluginSignIn.call(this, pending, 'getPendingRequests')
-  return isPluginSignIn ? pending.getPendingRequests() : undefined
+Redel.prototype.getPendingRequests = function getPendingRequests() {
+  _validatePlugin.call(this, PluginsNamesEnum.PENDING, pending.getPendingRequests.name)
+  return pending.getPendingRequests()
 }
-Redel.prototype.clearPendingRequests = pending.clear.bind(pending)
+Redel.prototype.clearPendingRequests = function clearPendingRequests() {
+  _validatePlugin.call(this, PluginsNamesEnum.PENDING, 'clearPendingRequests')
+  return pending.clear()
+}
 
 /**
  * @description
  * expose functions from cancel plugin
  */
-Redel.prototype.cancelGroupRequests = cancel.cancelGroupRequests.bind(cancel)
+Redel.prototype.cancelGroupRequests = function cancelGroupRequests(customCancelGroupKey) {
+  _validatePlugin.call(this, PluginsNamesEnum.CANCEL, cancel.cancelGroupRequests.name)
+  return cancel.cancelGroupRequests(customCancelGroupKey)
+}
 Redel.prototype.ccgk = cancel.ccgk
 
 /**
@@ -174,20 +187,22 @@ function _addPlugin(key) {
   this.signedPlugins.push(key)
 }
 
-
-function _isPluginSignIn(plugin, fnName) {
-  const { constructor } = plugin
-  const pluginPropertyName = constructor.name.toLowerCase()
-  if (!this.signedPlugins.includes(pluginPropertyName)) {
-    console.error(
-      `${constructor.name} plugin not initialized while you trying to call "${fnName}"`,
-      `try to pass the "${pluginPropertyName}" property into the Redel config to init the plugin`,
-      'for more information please visit our docs at',
-      GITHUB_REPO,
+/**
+ * @description
+ * Validate that plugin with this "pluginName" initialize before
+ * letting the developer work with the plugin functionality
+ * @param pluginName - the desire plugin name
+ * @param fnName - the function that user try to invoke
+ * @private
+ */
+function _validatePlugin(pluginName, fnName) {
+  if (!this.signedPlugins.includes(pluginName)) {
+    throw new Error(
+      `${pluginName} plugin not initialized while you trying to call "${fnName}",
+      try to pass the "${pluginName}" property into the Redel config to init the plugin,
+      for more information please visit our docs at ${GITHUB_REPO}`,
     )
-    return false
   }
-  return true
 }
 
 module.exports = new Redel()
