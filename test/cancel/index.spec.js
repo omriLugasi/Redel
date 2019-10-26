@@ -18,8 +18,7 @@ describe('Cancel plugin', () => {
   })
 
   describe('cancel group requests', () => {
-    const ccgkParam = `?${Redel.ccgk}=${cancelGroupKey}`
-    const generateUrl = time => `${BASIC_URL}/time-out/${time}${ccgkParam}`
+    const generateUrl = time => `${BASIC_URL}/time-out/${time}`
     const basicNum = 300
     let canceledRequestsTimes = 0
     const catchFn = e => {
@@ -30,12 +29,13 @@ describe('Cancel plugin', () => {
 
     context('basic cancel group logic', () => {
       before(() => {
+        const headers = Redel.getCancelGroupHeader(cancelGroupKey)
         canceledRequestsTimes = 0
-        axios.get(generateUrl(basicNum + 20)).catch(catchFn)
-        axios.get(generateUrl(basicNum + 50)).catch(catchFn)
-        axios.get(generateUrl(basicNum + 70)).catch(catchFn)
-        axios.get(generateUrl(basicNum + 100)).catch(catchFn)
-        axios.get(generateUrl(basicNum + 190)).catch(catchFn)
+        axios.get(generateUrl(basicNum + 6), { headers }).catch(catchFn)
+        axios.get(generateUrl(basicNum + 7), { headers }).catch(catchFn)
+        axios.get(generateUrl(basicNum + 8), { headers }).catch(catchFn)
+        axios.get(generateUrl(basicNum + 9), { headers }).catch(catchFn)
+        axios.get(generateUrl(basicNum + 10), { headers }).catch(catchFn)
       })
 
       it('should validate that requests with "cancelGroupKey" canceled', done => {
@@ -49,16 +49,17 @@ describe('Cancel plugin', () => {
 
     context('check that cancel of one group dosen\'t effect on other group', () => {
       before(() => {
+        const headers = Redel.getCancelGroupHeader(cancelGroupKey)
         canceledRequestsTimes = 0
-        axios.get(generateUrl(basicNum + 20)).catch(catchFn)
-        axios.get(generateUrl(basicNum + 30)).catch(catchFn)
-        axios.get(generateUrl(basicNum + 40)).catch(catchFn)
+        axios.get(generateUrl(basicNum + 6), { headers }).catch(catchFn)
+        axios.get(generateUrl(basicNum + 7), { headers }).catch(catchFn)
+        axios.get(generateUrl(basicNum + 9), { headers }).catch(catchFn)
       })
 
       it('should validate that "cancelAllGroupRequests" cancel only the requests with the group key', done => {
         Redel.cancelGroupRequests('another-custom-group-key')
         setImmediate(() => {
-          assert.equal(canceledRequestsTimes, 0)
+          assert.isTrue(canceledRequestsTimes === 0)
           done()
         })
       })

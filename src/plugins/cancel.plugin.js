@@ -1,6 +1,5 @@
 const { isCancel: isAxiosCancel, CancelToken } = require('axios')
 const url = require('url')
-const qs = require('qs')
 const { ensureGetConfig } = require('./../utils')
 const logger = require('./../services/logger')
 
@@ -29,8 +28,6 @@ class Cancel {
   constructor() {
     this.cancelRequestMap = {}
     this.cancelRequestGroupMap = {}
-    // for export
-    this.ccgk = uniqueGroupKey
     this.interceptorsRef = {}
   }
 
@@ -44,10 +41,9 @@ class Cancel {
    */
   _generateKeys(config) {
     const urlObject = url.parse(config.url)
-    const query = qs.parse(urlObject.query)
     const urlPathName = urlObject.pathname
     const requestKey = `${urlPathName} -> ${config.method}`
-    const groupKey = query[uniqueGroupKey]
+    const groupKey = config.headers[uniqueGroupKey]
     return [requestKey, groupKey]
   }
 
@@ -197,6 +193,18 @@ class Cancel {
       this._delete(cancelItem.config)
     })
     delete this.cancelRequestGroupMap[groupKey]
+  }
+
+  /**
+   * @description
+   * Return object with { ccgk: customCancelGroupKey } to use in the axios config headers
+   * @param customCancelGroupKey
+   * @returns {{}}
+   */
+  getCancelGroupHeader(customCancelGroupKey) {
+    return {
+      [uniqueGroupKey]: customCancelGroupKey,
+    }
   }
 }
 
