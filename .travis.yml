@@ -1,0 +1,17 @@
+sudo: false
+language: node_js
+cache:
+  directories:
+    - node_modules
+notifications:
+  on_failure: change
+  on_success: never
+node_js:
+  - 12
+  - 10
+
+script:
+  - yarn run eslint:src
+  - yarn run eslint:test
+  - yarn run test
+  - yarn run covarge:all

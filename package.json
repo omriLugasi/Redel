@@ -1,6 +1,6 @@
 {
   "name": "redel",
-  "version": "0.6.0-beta.6",
+  "version": "1.0.0",
   "main": "dist/index.js",
   "license": "MIT",
   "description": "Promise based HTTP client for the browser and node.js",
@@ -10,6 +10,7 @@
     "test": "ALLOW_LOG=false mocha --recursive ./test",
     "covarge:html": "nyc --r=html mocha --recursive ./test",
     "covarge": "nyc mocha --recursive ./test",
+    "covarge:all": "nyc mocha --recursive ./test && nyc report --reporter=text-lcov | coveralls",
     "eslint:src": "eslint src/",
     "eslint:test": "eslint test/"
   },
@@ -47,6 +48,7 @@
   "devDependencies": {
     "body-parser": "^1.19.0",
     "chai": "^4.2.0",
+    "coveralls": "^3.0.7",
     "eslint": "^6.5.1",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2",
