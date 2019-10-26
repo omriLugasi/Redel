@@ -9,5 +9,6 @@
 
 Options
 ----
-- cache module
-- differ module
+- statistics plugin
+- cache plugin
+- differ plugin

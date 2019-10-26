@@ -1,6 +1,6 @@
 {
   "name": "redel",
-  "version": "0.6.1",
+  "version": "1.0.0",
   "main": "dist/index.js",
   "license": "MIT",
   "description": "Promise based HTTP client for the browser and node.js",
