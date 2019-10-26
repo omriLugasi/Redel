@@ -64,6 +64,14 @@ describe('Cancel plugin', () => {
         })
       })
     })
+
+    context('throw an error if developer try to use get header function without inject any key', () => {
+      it('should validate that get headers without key throw exception', () => {
+        assert.throw(() => Redel.getCancelGroupHeader(), `"getCancelGroupHeader" should invoke 
+      with cancel group key, please verify that you didn't 
+      invoke the function with undefined or null`)
+      })
+    })
   })
 
   describe('cancel single request', () => {

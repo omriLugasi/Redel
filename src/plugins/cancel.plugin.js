@@ -202,6 +202,11 @@ class Cancel {
    * @returns {{}}
    */
   getCancelGroupHeader(customCancelGroupKey) {
+    if (!customCancelGroupKey) {
+      throw new Error(`"getCancelGroupHeader" should invoke 
+      with cancel group key, please verify that you didn't 
+      invoke the function with undefined or null`)
+    }
     return {
       [uniqueGroupKey]: customCancelGroupKey,
     }
