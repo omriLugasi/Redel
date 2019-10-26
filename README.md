@@ -4,6 +4,7 @@
 [![npm downloads](https://img.shields.io/npm/dm/redel.svg?style=flat-square)](http://npm-stat.com/charts.html?package=redel)
 ![license: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
 [![Build Status](https://travis-ci.org/omriLugasi/Redel.svg?branch=master)](https://travis-ci.org/omriLugasi/Redel)
+[![Coverage Status](https://coveralls.io/repos/github/omriLugasi/Redel/badge.svg)](https://coveralls.io/github/omriLugasi/Redel)
 
 A middleware library for promise based axios for the browser and nodeJs
 
