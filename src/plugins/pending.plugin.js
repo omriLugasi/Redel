@@ -77,14 +77,6 @@ class Pending {
 
   /**
    * @description
-   * Reset the pendingRequestsObject
-   */
-  clear() {
-    this.pendingRequestsObject = {}
-  }
-
-  /**
-   * @description
    * This function is a must function in each plugin.
    * The function should sign the plugin into the
    * axios interceptors request and response
@@ -108,6 +100,15 @@ class Pending {
   eject(axios) {
     axios.interceptors.request.eject(this.interceptorsRef.request)
     axios.interceptors.response.eject(this.interceptorsRef.response)
+  }
+
+
+  /**
+   * @description
+   * Reset the pendingRequestsObject
+   */
+  clear() {
+    this.pendingRequestsObject = {}
   }
 
   /**
