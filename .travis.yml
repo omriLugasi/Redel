@@ -1,0 +1,16 @@
+sudo: false
+language: node_js
+cache:
+  directories:
+    - node_modules
+notifications:
+  on_failure: change
+  on_success: never
+node_js:
+  - 12
+  - 10
+
+script:
+  - npm run eslint:src
+  - npm run eslint:test
+  - npm run test
