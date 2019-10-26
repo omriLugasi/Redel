@@ -48,13 +48,13 @@ describe('Test the main module', () => {
     })
   })
 
-  context('validate that main module singed only allowed middleware\'s', () => {
+  context('validate that main module singed only allowed plugins', () => {
     it('should validate that only allowed keys are consume from the config', () => {
       const key = 'pending'
       Redel.use(axios, { [key]: true, customKey: true })
-      const singedMiddleware = Redel.getSignedMiddleware()
-      assert.isTrue(singedMiddleware[0] === key)
-      assert.isTrue(singedMiddleware.length === 1)
+      const singedPlugins = Redel.getSignedPlugins()
+      assert.isTrue(singedPlugins[0] === key)
+      assert.isTrue(singedPlugins.length === 1)
     })
   })
 
@@ -63,7 +63,7 @@ describe('Test the main module', () => {
       it('should return 0 length of signed plugins', () => {
         Redel.use(axios, { log: true, cancel: true })
         Redel.ejectAll()
-        assert.isTrue(Redel.getSignedMiddleware().length === 0)
+        assert.isTrue(Redel.getSignedPlugins().length === 0)
       })
     })
 
@@ -71,7 +71,7 @@ describe('Test the main module', () => {
       it('should eject the relevant plugin by key', () => {
         Redel.use(axios, { pending: true, cancel: true })
         Redel.eject('pending')
-        assert.isTrue(Redel.getSignedMiddleware().length === 1)
+        assert.isTrue(Redel.getSignedPlugins().length === 1)
 
         axios.get(`${BASIC_URL}/basic`).catch(() => {})
         axios.get(`${BASIC_URL}/basic`).catch(() => {})
@@ -84,13 +84,13 @@ describe('Test the main module', () => {
       it('should not eject plugin that not exist', () => {
         Redel.use(axios, { pending: true, cancel: true })
         Redel.eject('not-exist-plugin-name')
-        assert.isTrue(Redel.getSignedMiddleware().length === 2)
+        assert.isTrue(Redel.getSignedPlugins().length === 2)
       })
 
       it('should not eject plugin that exist but not sign', () => {
         Redel.use(axios, { pending: true, log: true })
         Redel.eject('cancel')
-        assert.isTrue(Redel.getSignedMiddleware().length === 2)
+        assert.isTrue(Redel.getSignedPlugins().length === 2)
       })
     })
   })
@@ -99,27 +99,27 @@ describe('Test the main module', () => {
     it('should assign new plugin', () => {
       Redel.use(axios, {})
       Redel.add('log')
-      assert.isTrue(Redel.getSignedMiddleware().length === 1)
+      assert.isTrue(Redel.getSignedPlugins().length === 1)
     })
 
     it('should not work with custom plugin name', () => {
       Redel.use(axios, {})
       Redel.add('customPluginName')
-      assert.isTrue(Redel.getSignedMiddleware().length === 0)
+      assert.isTrue(Redel.getSignedPlugins().length === 0)
     })
 
     it('should not sign plugin that already singed', () => {
       const pluginName = 'log'
       Redel.use(axios, { [pluginName]: true })
       Redel.add(pluginName)
-      assert.isTrue(Redel.getSignedMiddleware().length === 1)
+      assert.isTrue(Redel.getSignedPlugins().length === 1)
     })
 
     it('should work with already singed plugins', () => {
       const pluginName = 'log'
       Redel.use(axios, { cancel: true })
       Redel.add(pluginName)
-      assert.isTrue(Redel.getSignedMiddleware().length === 2)
+      assert.isTrue(Redel.getSignedPlugins().length === 2)
     })
   })
 

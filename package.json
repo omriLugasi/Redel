@@ -25,6 +25,8 @@
     "node",
     "axios",
     "middleware",
+    "plugins",
+    "plugin",
     "middlewares",
     "plugins",
     "interceptors",

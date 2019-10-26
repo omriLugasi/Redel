@@ -6,7 +6,7 @@ const { GITHUB_REPO } = require('./config')
 
 /**
  * The Only Authorized plugins for this version.
- * In the future we want to let developers to create middlewares
+ * In the future we want to let developers to create plugin
  * and use our API to create custom plugins
  */
 
@@ -43,7 +43,7 @@ function isAxiosInstance(axios) {
 /**
  * @description
  * "use" will search for desire and authorized plugins to invoke there "init" function,
- * this function called "applyMiddleware".
+ * this function called "applyPlugin".
  * Please notice that plugin key must be follow by *true* value
  * @param axios - the axios instance ( also work with axios.create())
  * @param config -
@@ -58,7 +58,7 @@ function use(axios, config) {
   if (config && typeof config === 'object' && !Array.isArray(config)) {
     Object.keys(config).forEach((key) => {
       if (AuthorizedPlugins[key]) {
-        logger.log(` ${key} Middleware was sign`)
+        logger.log(` ${key} Plugin was sign`)
         _addPlugin.call(this, key)
       }
     })
@@ -72,7 +72,7 @@ function use(axios, config) {
  * Return Array of singed plugins name
  * @returns ["plugin-name"]
  */
-function getSignedMiddleware() {
+function getSignedPlugins() {
   return [...this.signedPlugins]
 }
 
@@ -143,11 +143,11 @@ function add(key) {
  * @param add - add plugin
  * @param ejectAll - eject all plugins
  * @param eject - eject plugin
- * @param getSignedMiddleware - to get the singed plugins as strings array
+ * @param getSignedPlugins - to get the singed plugins as strings array
  */
 Redel.prototype.use = use
 Redel.prototype.add = add
-Redel.prototype.getSignedMiddleware = getSignedMiddleware
+Redel.prototype.getSignedPlugins = getSignedPlugins
 Redel.prototype.ejectAll = ejectAll
 Redel.prototype.eject = eject
 
@@ -183,7 +183,7 @@ Redel.prototype.ccgk = cancel.ccgk
  */
 
 function _addPlugin(key) {
-  AuthorizedPlugins[key].applyMiddleware(this._axios)
+  AuthorizedPlugins[key].applyPlugin(this._axios)
   this.signedPlugins.push(key)
 }
 
