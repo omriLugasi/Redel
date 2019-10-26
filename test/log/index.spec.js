@@ -33,8 +33,8 @@ describe('Log plugin', () => {
 
   context('is log sign to the main module', () => {
     it('should find log in the main module', () => {
-      assert.isTrue(Redel.getSignedMiddleware()[0] === 'log')
-      assert.isTrue(Redel.getSignedMiddleware().length === 1)
+      assert.isTrue(Redel.getSignedPlugins()[0] === 'log')
+      assert.isTrue(Redel.getSignedPlugins().length === 1)
     })
   })
 

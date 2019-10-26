@@ -82,7 +82,7 @@ class Pending {
    * axios interceptors request and response
    * @param axios
    */
-  applyMiddleware(axios) {
+  applyPlugin(axios) {
     this.interceptorsRef.request = axios.interceptors.request.use(
       this._onRequestSuccess.bind(this),
     )

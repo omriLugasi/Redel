@@ -25,7 +25,7 @@ $ yarn add redel
 - [add](#add)
 - [eject](#eject)
 - [ejectAll](#ejectAll)
-- [getSignedMiddleware](#getSignedMiddleware)
+- [getSignedPlugins](#getSignedPlugins)
 - [getPendingRequests](#getPendingRequests)
 - [clearPendingRequests](#clearPendingRequests)
 - [cancelGroupRequests](#cancelGroupRequests)
@@ -317,7 +317,7 @@ Redel.use(axios, { log: true })
 
 Redel.add('cancel')
 
-console.log(Redel.getSignedMiddleware()) // ['log', 'cancel']
+console.log(Redel.getSignedPlugins()) // ['log', 'cancel']
 
  ```
 
@@ -354,7 +354,7 @@ Redel.ejectAll()
 
   ```
 
- ## getSignedMiddleware
+ ## getSignedPlugins
  Return Array of singed plugins name.<br />
 
  Exmaple
@@ -365,7 +365,7 @@ const axios = require('axios')
 
 Redel.use(axios, { log: true, cancel: true })
 
-console.log(Redel.getSignedMiddleware()) // ['log', 'cancel']
+console.log(Redel.getSignedPlugins()) // ['log', 'cancel']
 
  ```
 
