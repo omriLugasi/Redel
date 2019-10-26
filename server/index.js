@@ -33,6 +33,8 @@ app.get('/basic', basicResponse)
   .patch('/basic', basicResponse)
   .delete('/basic', basicResponse)
 
+app.post('/multipart', (req, res) => res.sendStatus(200))
+
 
 let server
 
