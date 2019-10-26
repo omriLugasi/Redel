@@ -1,5 +1,6 @@
 const fs = require('fs')
-const formData = require('form-data')
+const path = require('path')
+const FormData = require('form-data')
 const axios = require('axios')
 const { assert } = require('chai')
 const { spy } = require('sinon')
@@ -234,12 +235,11 @@ describe('Log plugin', () => {
   })
 
   context('requests with multipart', () => {
-
     it('should print in the request data FromData object', async () => {
-      const absolutePath = __dirname + '/../../package.json'
+      const absolutePath = path.join(__dirname, '/../../package.json')
       const file = fs.createReadStream(absolutePath)
 
-      const form = new formData()
+      const form = new FormData()
       form.append('file', file)
 
       await axios({
@@ -249,12 +249,11 @@ describe('Log plugin', () => {
         cache: false,
         url: `${BASIC_URL}/multipart`,
         data: form,
-        config: { headers: form.getHeaders() }
+        config: { headers: form.getHeaders() },
       })
 
       const printedData = consoleLogSpy.lastCall.args[0]
       assert.isTrue(printedData.requestData.data._valuesToMeasure[0].path === absolutePath)
-
     })
   })
 })
