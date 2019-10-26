@@ -85,7 +85,7 @@ Redel.use(axiosInstance, config)
 
 // ..
 
-axios.get('https://jsonplaceholder.typicode.com/todos')
+axiosInstance.get('https://jsonplaceholder.typicode.com/todos')
 
 ```
 
@@ -335,8 +335,9 @@ Redel.use(axios, { log: true })
 //...
 //...
 //...
-
+console.log(Redel.getSignedPlugins()) // ['log']
 Redel.eject('log')
+console.log(Redel.getSignedPlugins()) // []
 
  ```
 
