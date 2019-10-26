@@ -54,6 +54,12 @@ function use(axios, config) {
   if (!isAxiosInstance(axios)) {
     throw new Error('Redel must init with an axios instance!')
   }
+  if (this._axios) {
+    // if developer try to call `use` twice or more
+    // we should eject all plugins before init the Redel instance again,
+    // this will ensure that we avoid memory leak or mismatch
+    ejectAll.call(this)
+  }
   this._axios = axios
   if (config && typeof config === 'object' && !Array.isArray(config)) {
     Object.keys(config).forEach((key) => {

@@ -1,6 +1,6 @@
 # ROADMAP
-- try the plugins with multipart
 - be sure not to set Redel twice at the same app
+- try the plugins with multipart
 - Create your on invirte module
 - CI
 - https://coveralls.io/

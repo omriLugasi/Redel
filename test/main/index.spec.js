@@ -131,4 +131,13 @@ describe('Test the main module', () => {
         + '      for more information please visit our docs at https://github.com/omriLugasi/Redel')
     })
   })
+
+  context('When Redel init twice', () => {
+    it('should eject all plugin before init the new Redel instance (make an absolute reset)', () => {
+      Redel.use(axios, { log: true })
+      assert.isTrue(Redel.getSignedPlugins().length === 1)
+      Redel.use(axios.create(), {})
+      assert.isTrue(Redel.getSignedPlugins().length === 0)
+    })
+  })
 })
