@@ -29,7 +29,7 @@ $ yarn add redel
 - [getPendingRequests](#getPendingRequests)
 - [clearPendingRequests](#clearPendingRequests)
 - [cancelGroupRequests](#cancelGroupRequests)
-- [ccgk](#ccgk)
+- [getCancelGroupHeader](#getCancelGroupHeader)
 
 ## Plugins
 - [Cancel](#cancel-plugin)
@@ -104,7 +104,7 @@ axios.get('https://jsonplaceholder.typicode.com/todos')
   gonna be fired to the server.
 
  * **Cancel by group key** <br />
-  Cancel all requests with the **unique group key (ccgk)**
+  Cancel all requests with the **unique group key**
 
 
 **Usage - Single**
@@ -150,9 +150,7 @@ const axios = require('axios')
 Redel.use(axios, { cancel: true })
 const cancelGroupKey = 'customCancelGroupKey'
 
-// the group key currently will be a query param the implementation like below will be
-// "protocol://url:port?ccgk=customGroupKey"
-const ccgkParam = `${Redel.ccgk}=${cancelGroupKey}`
+const headers = Redel.getCancelGroupHeader(cancelGroupKey)
 const basicUrl = 'https://jsonplaceholder.typicode.com/todos'
 
 let canceledReqeuests = 0
@@ -166,10 +164,10 @@ const catchFn = e => {
 }
 
 const mount = () => {
-  axios.get(`${basicUrl}/1?${ccgkParam}`).catch(catchFn),
-  axios.get(`${basicUrl}/2?${ccgkParam}`).catch(catchFn),
-  axios.get(`${basicUrl}/3?${ccgkParam}`).catch(catchFn),
-  axios.get(`${basicUrl}/4?${ccgkParam}`).catch(catchFn)
+  axios.get(`${basicUrl}/1`, { headers }).catch(catchFn),
+  axios.get(`${basicUrl}/2`, { headers }).catch(catchFn),
+  axios.get(`${basicUrl}/3`, { headers }).catch(catchFn),
+  axios.get(`${basicUrl}/4`, { headers }).catch(catchFn)
 }
 
 mount()
@@ -405,7 +403,13 @@ Redel.clearPendingRequests()
 Redel.cancelGroupRequests('cancelGroupKey')
 ```
 
- ## ccgk
- **C**ancel **C**ustom **G**roup **K**ey
+ ## getCancelGroupHeader
+ sign request to cancel group.
 
- You can find an example for ccgk [here](#cancel-plugin)
+ ```js
+ Redel.getCancelGroupHeader()
+ ```
+
+ You can find examples [here](#cancel-plugin)
+
+

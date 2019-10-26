@@ -179,7 +179,10 @@ Redel.prototype.cancelGroupRequests = function cancelGroupRequests(customCancelG
   _validatePlugin.call(this, PluginsNamesEnum.CANCEL, cancel.cancelGroupRequests.name)
   return cancel.cancelGroupRequests(customCancelGroupKey)
 }
-Redel.prototype.ccgk = cancel.ccgk
+Redel.prototype.getCancelGroupHeader = function getCancelGroupHeader(customCancelGroupKey) {
+  _validatePlugin.call(this, PluginsNamesEnum.CANCEL, cancel.getCancelGroupHeader.name)
+  return cancel.getCancelGroupHeader(customCancelGroupKey)
+}
 
 /**
  * @description
