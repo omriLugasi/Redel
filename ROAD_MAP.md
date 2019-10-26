@@ -1,6 +1,4 @@
 # ROADMAP
-- CI
-- https://coveralls.io/
 - Create your on invirte module
 - configuration for each plugin
 - Informative README stage 2 (english improvement)
