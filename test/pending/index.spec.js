@@ -84,4 +84,15 @@ describe('Pending plugin', () => {
       })
     })
   })
+
+  context('is plugin work well with streams', () => {
+     it('should save pending stream requests', done => {
+       axios.get(`${BASIC_URL}/stream`).then(() => {
+         done()
+       })
+       setImmediate(() => {
+         assert.isTrue(Redel.getPendingRequests().length === 1)
+       })
+     })
+  })
 })

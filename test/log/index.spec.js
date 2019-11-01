@@ -256,4 +256,12 @@ describe('Log plugin', () => {
       assert.isTrue(printedData.requestData.data._valuesToMeasure[0].path === absolutePath)
     })
   })
+
+  context('is plugin work well with streams', () => {
+    it('should print stream request', async () => {
+      await axios.get(`${BASIC_URL}/stream`)
+      const printedData = consoleLogSpy.lastCall.args[0]
+      assert.isTrue(printedData.url === `${BASIC_URL}/stream`)
+    })
+  })
 })
