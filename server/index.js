@@ -35,9 +35,14 @@ app.get('/basic', basicResponse)
 
 app.post('/multipart', (req, res) => res.sendStatus(200))
 
+app.get('/stream', (req, res) => {
+  res.write("USERID,NAME,FBID,ACCOUNT,SUBSCRIPTION,PRICE,STATE,TIMEPERIOD\n")
+  res.write("23,John Doe,1234,500,SUBSCRIPITON,100,ACTIVE,30\n")
+  res.end()
+})
+
 
 let server
-
 module.exports = {
   init: () => {
     server = app.listen(port)
