@@ -40,7 +40,7 @@
   ],
   "author": "Omri Luggasi",
   "dependencies": {
-    "axios": "0.19.0",
+    "axios": "0.21.1",
     "qs": "6.9.0",
     "url": "^0.11.0",
     "uuid": "3.3.3"
